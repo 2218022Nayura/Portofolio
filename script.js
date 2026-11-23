@@ -1464,6 +1464,9 @@
       }
       stage(4, R.route === 'auto' ? 'done' : 'warn', 'Respons siap');
       A.reply.classList.add('on');
+      if (window.matchMedia('(max-width: 1000px)').matches) {
+        A.reply.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
+      }
       await typeInto(A.rtxt, R.reply, ok, 7, (s) => { A.rtxt.textContent = s; }); if (!ok()) return;
       renderSug(R.sug);
 

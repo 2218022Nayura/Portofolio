@@ -1081,8 +1081,23 @@ html.lb-open { overflow: hidden; }
   .bento { grid-template-columns: repeat(2, 1fr); }
   .project, .project.big, .project.sm, .project.wide, .project.feature { grid-column: span 2; grid-row: auto; }
   .project.feature { grid-template-columns: 1fr; }
+  /* AI Automation Lite mobile-first: hasil jawaban langsung dekat di bawah tombol tanpa scroll panjang */
   .ai-body { grid-template-columns: 1fr; min-height: 0; }
+  .ai-col { padding: 14px; gap: 10px; }
   .ai-col + .ai-col { border-left: 0; border-top: 1px solid var(--line); }
+  .ai-in { order: 1; }
+  .ai-out { order: 2; }
+  .ai-pipe { order: 3; }
+  .ai-out .ai-reply { order: -1; margin-top: 0; }
+  .ai-out .ai-ax { order: 0; }
+  .ai-out .ai-lbl { order: 1; margin-top: 4px; }
+  .ai-out .ai-json { order: 2; min-height: 92px; font-size: 10.5px; }
+  .ai-msg, .ai-msg textarea, .ai-view { min-height: 112px; }
+  .ai-stages { flex-direction: row; flex-wrap: wrap; gap: 6px 12px; }
+  .ai-stages::before, .ai-stages::after { display: none; }
+  .ai-st { padding: 4px 0; gap: 7px; }
+  .ai-ic { width: 20px; height: 20px; font-size: 9.5px; }
+  .ai-st b { font-size: 11.5px; }
   .rep-top, .dev-sim-top { flex-direction: column; align-items: flex-start; }
   .rep-mode-tabs, .dev-platform-tabs { width: 100%; }
 }
@@ -1097,7 +1112,13 @@ html.lb-open { overflow: hidden; }
 
 @media (max-width: 620px) {
   .container { width: calc(100% - 32px); }
-  .lead, .about-copy p, .project p, .bullets li, .project-steps li { text-align: left; text-indent: 1.5em; }
+  .lead, .about-copy p, .project p, .bullets li, .project-steps li {
+    text-align: justify;
+    text-justify: inter-word;
+    text-indent: 1.6em;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
   .chip { display: none; }
   .portrait { width: min(236px, 100%); }
   .metrics-strip, .skills-grid, .edu-grid, .ct-grid { grid-template-columns: 1fr; }
@@ -1193,3 +1214,41 @@ p, li { text-wrap: pretty; }
 .ct-links .ct-val { font-size: .88rem; }
 @media (max-width: 900px) { .ct-links { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 440px) { .ct-links { grid-template-columns: 1fr; } }
+
+/* Full responsive justify & paragraph indent refinement */
+.lead, .about-copy p, .project p {
+  text-align: justify;
+  text-justify: inter-word;
+  text-indent: 2em;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  word-spacing: normal;
+}
+.bullets li, .project-steps li {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+.ai-reply p {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+@media (max-width: 620px) {
+  .lead, .about-copy p, .project p {
+    text-align: justify;
+    text-justify: inter-word;
+    text-indent: 1.5em;
+  }
+  .bullets li, .project-steps li {
+    text-align: justify;
+    text-justify: inter-word;
+    text-indent: 0;
+  }
+  .ai-reply p {
+    text-align: justify;
+    text-justify: inter-word;
+  }
+}
