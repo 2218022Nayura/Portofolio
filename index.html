@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Nayura Arsineda — Software Engineer &amp; Data / Reporting Specialist</title>
+  <meta name="description" content="Portofolio Nayura Arsineda, S.Kom (S1 Teknik Informatika ITN Malang, IPK 3,50). Software Engineer (Django, Laravel, JavaScript/TypeScript, PostgreSQL, MySQL), pengolahan &amp; analisis data, serta dokumentasi &amp; pelaporan terstruktur." />
+  <meta name="theme-color" content="#ffffff" />
+  <meta property="og:title" content="Nayura Arsineda — Software Engineer &amp; Data / Reporting Specialist" />
+  <meta property="og:description" content="Pengembangan aplikasi web &amp; desktop, analisis &amp; rekap data, serta pelaporan kerja rapi untuk kebutuhan tim dan industri." />
+  <meta property="og:type" content="website" />
+
+  <meta name="color-scheme" content="light" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <!-- ⚠ GANTI "GANTI-USERNAME" & "GANTI-REPO" dengan alamat GitHub Pages-mu -->
+  <link rel="canonical" href="https://GANTI-USERNAME.github.io/GANTI-REPO/" />
+  <meta property="og:url" content="https://GANTI-USERNAME.github.io/GANTI-REPO/" />
+  <meta property="og:image" content="https://GANTI-USERNAME.github.io/GANTI-REPO/asset/og-image.png" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%231d1d1f'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13 44V20l15 24V20'/%3E%3Cpath d='M35 44l8.5-24L52 44M38 37h11'/%3E%3C/g%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="asset/apple-touch-icon.png" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Nayura Arsineda","jobTitle":"Software Engineer & Data / Reporting Specialist","alumniOf":"Institut Teknologi Nasional Malang","email":"mailto:arsinedanayura@gmail.com","sameAs":["https://www.linkedin.com/in/nayuraarsineda","https://instagram.com/n.arssineda"],"knowsAbout":["Django","Laravel","JavaScript","TypeScript","PostgreSQL","MySQL","Python","Data Analysis","Reporting"]}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script>(function(d){d.classList.add('js');try{if(!sessionStorage.getItem('nx-boot')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro')}catch(e){}})(document.documentElement);</script>
+</head>
+<body>
+  <!-- Intro pembuka: tirai presisi monokrom ala Apple (tampil sekali per sesi) -->
+  <div class="boot" id="boot" aria-hidden="true">
+    <i class="boot-panel top"></i><i class="boot-panel bot"></i>
+    <div class="boot-core">
+      <div class="boot-name"><span><em>Nayura</em></span><span><em>Arsineda</em></span></div>
+      <div class="boot-meta"><span>Software Engineer</span><i></i><span>Data &amp; Reporting</span></div>
+      <div class="boot-foot"><b id="bootNum">000</b><div class="boot-line"><i id="bootBar"></i></div></div>
+    </div>
+  </div>
+
+  <a class="skip" href="#profil">Lewati ke konten</a>
+
+  <!-- Latar bersih & indikator progres baca -->
+  <div class="bg" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"><span></span></div>
+
+  <!-- Navbar dinamis -->
+  <header class="nav-wrap" id="navWrap">
+    <nav class="nav" id="nav" aria-label="Navigasi utama">
+      <div class="nav-full" id="navFull">
+        <a href="#home" class="brand" aria-label="Beranda">
+          <span class="brand-mark">Nai</span>
+          <span class="brand-text">Nayura Arsineda</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="#profil" data-link="profil">Profil</a></li>
+          <li><a href="#pendidikan" data-link="pendidikan">Pendidikan</a></li>
+          <li><a href="#keahlian" data-link="keahlian">Keahlian</a></li>
+          <li><a href="#pengalaman" data-link="pengalaman">Pengalaman</a></li>
+          <li><a href="#proyek" data-link="proyek">Proyek</a></li>
+          <li><a href="#kontak" data-link="kontak">Kontak</a></li>
+        </ul>
+
+        <div class="nav-right">
+          <a href="#kontak" class="btn btn-dark btn-small">Hubungi</a>
+          <button class="burger" id="burger" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="navSheet">
+            <span></span><span></span>
+          </button>
+        </div>
+      </div>
+
+      <button class="nav-island" id="navIsland" type="button" aria-label="Buka menu navigasi" aria-expanded="false">
+        <span class="island-dot" aria-hidden="true"></span>
+        <span class="island-label">Menu</span>
+      </button>
+    </nav>
+
+    <div class="nav-sheet glass" id="navSheet">
+      <ul>
+        <li><a href="#profil" data-link="profil">Profil</a></li>
+        <li><a href="#pendidikan" data-link="pendidikan">Pendidikan, Pelatihan &amp; Sertifikasi</a></li>
+        <li><a href="#keahlian" data-link="keahlian">Keahlian</a></li>
+        <li><a href="#pengalaman" data-link="pengalaman">Pengalaman</a></li>
+        <li><a href="#proyek" data-link="proyek">Proyek</a></li>
+        <li><a href="#kontak" data-link="kontak">Kontak</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="status reveal"><span class="dot"></span>Terbuka · Full-time &amp; Hybrid / Remote</p>
+
+          <h1 class="reveal" style="--d:.05s">
+            <span class="h1-small">Halo, saya</span>
+            <span class="h1-name">Nayura Arsineda</span>
+          </h1>
+
+          <p class="role reveal" style="--d:.1s">Software Engineer · Data &amp; Reporting Specialist</p>
+
+          <p class="lead reveal" style="--d:.15s">
+            Lulusan S1 Teknik Informatika ITN Malang yang berfokus pada pengembangan software dan analisis data.
+            Saya percaya aplikasi yang baik adalah yang relevan dengan kebutuhan, nyaman digunakan, serta dibangun dengan struktur yang rapi dari sisi desain maupun logika di baliknya.
+          </p>
+
+          <div class="hero-cta reveal" style="--d:.2s">
+            <a href="#proyek" class="btn btn-dark">
+              Lihat Proyek &amp; Studi Kasus
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="asset/CV-Nayura-Arsineda.pdf" class="btn btn-glass" download>
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>
+              Unduh CV
+            </a>
+          </div>
+
+          <ul class="socials reveal" style="--d:.25s" aria-label="Media sosial &amp; kontak">
+            <li><a class="icon-btn" href="https://www.linkedin.com/in/nayuraarsineda" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11.5H3zM9.75 9.75h3.83v1.57h.06c.53-1 1.84-2.07 3.78-2.07 4.04 0 4.78 2.66 4.78 6.1v5.9h-4v-5.23c0-1.25-.02-2.85-1.74-2.85-1.74 0-2.01 1.36-2.01 2.76v5.32h-4z"/></svg></a></li>
+            <li><a class="icon-btn" href="https://instagram.com/n.arssineda" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a></li>
+            <li><a class="icon-btn" href="mailto:arsinedanayura@gmail.com" aria-label="Email">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg></a></li>
+          </ul>
+        </div>
+
+        <!-- Foto + tombol sapa -->
+        <div class="hero-visual reveal" style="--d:.12s">
+          <figure class="portrait glass">
+            <div class="portrait-frame">
+              <div class="portrait-placeholder" aria-hidden="true">
+                <span class="ph-badge">NA · S.Kom</span>
+                <span class="ph-monogram">NA</span>
+                <span class="ph-caption">Software Engineering · Data · Reporting</span>
+              </div>
+              <img src="asset/photo.jpeg" alt="Foto Nayura Arsineda" width="680" height="850" decoding="async" onload="this.parentElement.classList.add('has-photo')" onerror="this.remove()" />
+
+              <div class="hello-wrap">
+                <button class="hello" id="hello" type="button" aria-label="Klik untuk menyapa">
+                  <span class="hello-dot" aria-hidden="true"></span>
+                  <span class="hello-text" id="helloText" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+            <figcaption>
+              <span class="cap-name">Nayura Arsineda</span>
+              <span class="cap-sub">Cakung, Jakarta Timur · Siap Kerja</span>
+            </figcaption>
+            <span class="sr-only" id="helloLive" aria-live="polite"></span>
+          </figure>
+
+          <span class="chip chip-a glass" aria-hidden="true">GPA 3,50 · ITN Malang</span>
+          <span class="chip chip-b glass" aria-hidden="true">Software · Data · Pelaporan</span>
+        </div>
+      </div>
+
+      <!-- Ringkasan nilai tambah -->
+      <div class="container hero-metrics reveal" style="--d:.22s">
+        <div class="metrics-strip glass">
+          <div class="metric-cell">
+            <span class="metric-val">2026</span>
+            <span class="metric-lbl">Lulus S1 Teknik Informatika · IPK 3,50</span>
+          </div>
+          <div class="metric-cell">
+            <span class="metric-val">Software Engineering</span>
+            <span class="metric-lbl">Django, Laravel, JS/TS, SQL &amp; Desktop Python</span>
+          </div>
+          <div class="metric-cell">
+            <span class="metric-val">Data &amp; Ops</span>
+            <span class="metric-lbl">Rekap, analisis data &amp; laporan Excel/Sheets/Word/PPT</span>
+          </div>
+          <div class="metric-cell">
+            <span class="metric-val">End-to-End</span>
+            <span class="metric-lbl">Dari analisis kebutuhan, UAT, deployment hingga dokumentasi</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROFIL -->
+    <section class="section" id="profil">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow">Profil</p>
+          <h2>Ringkas, terukur, dan <span class="soft">siap pakai di tim.</span></h2>
+        </header>
+
+        <div class="about-grid">
+          <div class="about-copy reveal">
+            <p>
+              Saya lulusan S1 Teknik Informatika Institut Teknologi Nasional Malang yang senang
+              membuat aplikasi, mulai dari menangkap kebutuhan tim, membuat antar muka yang rapih, smooth dan mudah digunakan, lalu merancang struktur
+              database (PostgreSQL dan MySQL), membangun aplikasi web (Django, Laravel, JavaScript/TypeScript) maupun
+              aplikasi desktop menggunakan Python, sampai tahap pengujian dan rilis.
+            </p>
+            <p>
+              Selain ngoding, saya juga terbiasa merapikan data, bikin rekap operasional, dan menyusun laporan atau
+              dokumentasi kerja pakai Word, Excel, PowerPoint, Google Docs, serta Google Sheets. Buat saya, kode yang
+              bagus dan laporan yang jelas itu sama pentingnya supaya kerja tim tetap nyambung, cepat, rapi, dan gampang
+              ditindaklanjuti.
+            </p>
+          </div>
+
+          <aside class="facts glass reveal" style="--d:.08s">
+            <dl>
+              <div><dt>Domisili</dt><dd>Cakung Timur, Jakarta Timur</dd></div>
+              <div><dt>Kompetensi Inti</dt><dd>Software Engineering · Data &amp; Rekap · Dokumentasi</dd></div>
+              <div><dt>Perangkat Kerja</dt><dd>Excel, Sheets, Word, Docs, PowerPoint, SQL, Git</dd></div>
+              <div><dt>Ketersediaan</dt><dd><span class="dot inline"></span>Siap bergabung (On-site / Hybrid / Remote)</dd></div>
+            </dl>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- PENDIDIKAN, PELATIHAN & SERTIFIKASI -->
+    <section class="section" id="pendidikan">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow">Pendidikan · Pelatihan · Sertifikasi</p>
+          <h2 class="wide-h2">Fondasi akademik, pelatihan, dan <span class="soft">kompetensi.</span></h2>
+        </header>
+
+        <div class="sub-block">
+          <h3 class="sub-title reveal">Pendidikan</h3>
+          <div class="edu-grid">
+            <article class="glass card edu reveal">
+              <span class="date">SMA</span>
+              <h3>SMA Negeri 115 Jakarta Utara</h3>
+              <p class="org">Jurusan IPA</p>
+            </article>
+
+            <article class="glass card edu reveal" style="--d:.06s">
+              <span class="date">2026</span>
+              <h3>S1 Teknik Informatika</h3>
+              <p class="org">Institut Teknologi Nasional Malang</p>
+              <p class="gpa">IPK <b>3,50</b></p>
+            </article>
+          </div>
+        </div>
+
+        <div class="sub-block">
+          <h3 class="sub-title reveal">Pelatihan</h3>
+          <div class="edu-grid">
+            <article class="glass card edu reveal">
+              <span class="date">MSIB Batch 7</span>
+              <h3>Kemdiktisaintek</h3>
+              <p class="org">Studi Independen International Software Engineer Diploma — Python Web Developer (Django, PostgreSQL &amp; MySQL)</p>
+            </article>
+
+            <article class="glass card edu reveal" style="--d:.06s">
+              <span class="date">Kursus</span>
+              <h3>Dicoding</h3>
+              <p class="org">Basic Website &amp; JavaScript Course</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="sub-block">
+          <div class="sub-head reveal">
+            <h3 class="sub-title">Sertifikasi <span class="count" id="certCount"></span></h3>
+            <div class="car-controls">
+              <span class="car-index" id="certIndex" aria-live="polite">01–03 / 12</span>
+              <button class="icon-btn" id="certPrev" type="button" aria-label="Sertifikat sebelumnya">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
+              </button>
+              <button class="icon-btn" id="certNext" type="button" aria-label="Sertifikat berikutnya">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="carousel reveal" id="certCarousel">
+            <div class="cert-track" id="certTrack" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Daftar sertifikasi"></div>
+          </div>
+          <div class="car-bar reveal" aria-hidden="true"><span id="certBar"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KEAHLIAN -->
+    <section class="section" id="keahlian">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow">Keahlian</p>
+          <h2>Keahlian <span class="soft">teknis, data &amp; operasional.</span></h2>
+        </header>
+
+        <div class="skills-grid">
+          <article class="skill glass reveal">
+            <span class="s-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="3"/><path d="M8 21h8M12 17v4"/></svg></span>
+            <h3>Frontend &amp; Arsitektur UI</h3>
+            <ul class="chips">
+              <li>HTML5 &amp; Semantic Markup</li>
+              <li>CSS3 &amp; Animasi Antarmuka</li>
+              <li>Vanilla JavaScript (ES6+)</li>
+              <li>TypeScript (Pola Komponen Angular)</li>
+              <li>Component &amp; State Design</li>
+              <li>UI Responsif &amp; Aksesibel</li>
+            </ul>
+          </article>
+
+          <article class="skill glass reveal" style="--d:.05s">
+            <span class="s-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg></span>
+            <h3>Backend &amp; Aplikasi</h3>
+            <ul class="chips">
+              <li>Django (MSIB)</li>
+              <li>Laravel</li>
+              <li>Python Web &amp; Desktop</li>
+              <li>REST API &amp; Autentikasi</li>
+              <li>Role / Hak Akses</li>
+              <li>MVC / MVT</li>
+            </ul>
+          </article>
+
+          <article class="skill glass reveal" style="--d:.1s">
+            <span class="s-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>
+            <h3>Olahan &amp; Analisis Data</h3>
+            <ul class="chips">
+              <li>Data Cleaning &amp; Validasi</li>
+              <li>Rekapitulasi Data Rutin</li>
+              <li>Analisis Tren &amp; Klasifikasi</li>
+              <li>Decision Tree</li>
+              <li>SQL Query &amp; Relasi</li>
+              <li>Ringkasan Metrik KPI</li>
+            </ul>
+          </article>
+
+          <article class="skill glass reveal">
+            <span class="s-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span>
+            <h3>Database &amp; Server</h3>
+            <ul class="chips">
+              <li>PostgreSQL (MSIB)</li>
+              <li>MySQL (MSIB &amp; Proyek)</li>
+              <li>Skema &amp; Normalisasi Data</li>
+              <li>CRUD &amp; Cetak Laporan PDF</li>
+              <li>Deployment Server</li>
+              <li>Backup &amp; Git</li>
+            </ul>
+          </article>
+
+          <article class="skill glass reveal" style="--d:.05s">
+            <span class="s-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>
+            <h3>Kualitas Sistem &amp; Rilis</h3>
+            <ul class="chips">
+              <li>Analisis Kebutuhan</li>
+              <li>Unit Testing &amp; UAT</li>
+              <li>Debugging &amp; Bug Fixing</li>
+              <li>Dokumentasi Teknis &amp; SOP</li>
+              <li>User Training</li>
+              <li>Kolaborasi Tim</li>
+            </ul>
+          </article>
+
+          <article class="skill glass reveal" style="--d:.1s">
+            <span class="s-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
+            <h3>Office, Google Workspace &amp; Pelaporan</h3>
+            <ul class="chips">
+              <li>Microsoft Excel &amp; Google Sheets</li>
+              <li>Microsoft Word &amp; Google Docs</li>
+              <li>Microsoft PowerPoint</li>
+              <li>Rekap &amp; Pelaporan Berkala</li>
+              <li>Penyusunan Berita Acara / SOP</li>
+              <li>Presentasi Hasil Kerja</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- PENGALAMAN -->
+    <section class="section" id="pengalaman">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow">Pengalaman</p>
+          <h2>Pengalaman <span class="soft">kerja.</span></h2>
+        </header>
+
+        <ol class="timeline">
+          <li class="tl-item reveal">
+            <span class="tl-dot" aria-hidden="true"></span>
+            <article class="glass card">
+              <header class="tl-head">
+                <div>
+                  <h3>Software Engineer &amp; Website Developer</h3>
+                  <p class="org">LPKU ITN Malang</p>
+                </div>
+                <span class="date">Feb – Sept 2026</span>
+              </header>
+              <ul class="bullets">
+                <li><strong>Analisis &amp; Perancangan Sistem:</strong> Menyusun kebutuhan sistem (requirement analysis), merancang alur proses bisnis pengelolaan kerja sama antarinstansi/mitra, serta merancang struktur database yang rapi dan terukur.</li>
+                <li><strong>Pengembangan Aplikasi, Data &amp; Website:</strong> Membangun sistem aplikasi web meliputi portal pengajuan dan administrasi MoU/PKS, dashboard monitoring status &amp; capaian kerja sama, rekap data &amp; notifikasi otomatis masa berlaku perjanjian serta pelaporan berkala, repositori dokumen digital terintegrasi, dan website company profile institusi.</li>
+                <li><strong>Pengujian, Pelaporan &amp; Implementasi:</strong> Melakukan unit testing, User Acceptance Testing (UAT), dan perbaikan bug, mendampingi deployment ke server, menyusun dokumentasi teknis serta rekap laporan operasional, dan melatih pengguna akhir secara kolaboratif.</li>
+              </ul>
+            </article>
+          </li>
+
+          <li class="tl-item reveal">
+            <span class="tl-dot" aria-hidden="true"></span>
+            <article class="glass card">
+              <header class="tl-head">
+                <div>
+                  <h3>Staff IT Intern</h3>
+                  <p class="org">PT. Asahi Best Base Indonesia</p>
+                </div>
+                <span class="date">Juli – Agustus 2025</span>
+              </header>
+              <ul class="bullets">
+                <li>Membangun aplikasi desktop monitoring barang forecast dengan fitur autentikasi login serta hak akses pengguna untuk Operator dan Leader.</li>
+                <li>Mengimplementasikan fitur CRUD dan rekap data barang masuk dan keluar (in/out) lengkap dengan nama barang, part number, hari dan tanggal in/out, jumlah, catatan, tanda tangan operator, validasi tanggal, serta cetak laporan PDF.</li>
+                <li>Mengembangkan dan mengoptimasi tampilan frontend website company profile perusahaan agar lebih rapi, konsisten, dan nyaman digunakan.</li>
+              </ul>
+            </article>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- PROYEK & DEMONSTRASI TEKNIS -->
+    <section class="section" id="proyek">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow">Proyek &amp; Demonstrasi Teknis</p>
+          <h2>Bukan sekadar mockup. <span class="soft">Semua di bawah ini jalan beneran.</span></h2>
+        </header>
+
+        <!-- 1. Demo aplikasi: Desktop, Mobile & Web lengkap -->
+        <div class="dev-sim glass reveal" id="devSim">
+          <div class="dev-sim-top">
+            <div>
+              <p class="eyebrow">Mini Show, Lihat Yuk!</p>
+              <h3>Desktop, Mobile &amp; Web</h3>
+            </div>
+            <div class="dev-platform-tabs" role="tablist" aria-label="Pilih perangkat">
+              <button class="dev-tab is-active" type="button" role="tab" aria-selected="true" data-platform="desktop">Desktop · Forecast</button>
+              <button class="dev-tab" type="button" role="tab" aria-selected="false" data-platform="mobile">Mobile · Karyawan</button>
+              <button class="dev-tab" type="button" role="tab" aria-selected="false" data-platform="web">Web · Administrasi</button>
+            </div>
+          </div>
+
+          <div class="dev-stage-grid">
+            <div class="dev-viewport-wrap" id="devViewportWrap" data-platform="desktop">
+
+              <!-- Monitor desktop -->
+              <div class="dv dv-mac" aria-label="Monitor desktop">
+                <div class="dv-mac-body">
+                  <div class="dv-mac-glass"><div class="scr" data-sim-screen="desktop"></div></div>
+                  <div class="dv-mac-chin"></div>
+                </div>
+                <div class="dv-mac-neck"></div>
+                <div class="dv-mac-foot"></div>
+              </div>
+
+              <!-- iPhone -->
+              <div class="dv dv-phone" aria-label="Smartphone">
+                <div class="dv-phone-frame">
+                  <div class="dv-island"></div>
+                  <div class="ios-status"><b id="iosClock">08:00</b><span>5G ▮▮▮</span></div>
+                  <div class="scr ios" data-sim-screen="mobile"></div>
+                  <div class="dv-home"></div>
+                </div>
+              </div>
+
+              <!-- Browser -->
+              <div class="dv dv-safari" aria-label="Browser">
+                <div class="sf-bar">
+                  <span class="tl"><b></b><b></b><b></b></span>
+                  <span class="sf-nav">‹ ›</span>
+                  <span class="sf-url"><i>🔒</i><span id="sfUrl">admin.portal.local/intake</span></span>
+                </div>
+                <div class="scr" data-sim-screen="web"></div>
+              </div>
+
+            </div>
+
+            <div class="dev-side">
+              <div class="dev-steps-card">
+                <div class="dev-steps-head">
+                  <span class="dev-side-label">Alur modul</span>
+                  <span class="dev-step-counter" id="devStepCounter">1 / 4</span>
+                </div>
+                <ol class="dev-pipeline" id="devPipeline"></ol>
+                <div class="dev-hint-row"><p class="dev-hint" id="devHint">Autopilot jalan. Klik apa saja di layar untuk ambil alih.</p><button class="pause-btn" id="devPause" type="button" aria-pressed="false">Jeda</button></div>
+              </div>
+              <div class="dev-code-card">
+                <div class="dev-code-head">
+                  <span id="devCodeFile">auth_role.py</span>
+                  <span class="dev-code-tag" id="devCodeTag">Role Access</span>
+                </div>
+                <pre class="dev-code"><code id="devCodeBody"></code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Studio Full-Stack: demo animasi proses kerja engineer -->
+        <div class="rep-sim glass reveal" id="fxSim">
+          <div class="rep-top">
+            <div>
+              <p class="eyebrow"><span class="live-dot"></span>Full-Stack Lite Workflow </p>
+              <h3>Dari database, desain UI/UX, deploy, QA, sampai laporan</h3>
+            </div>
+            <div class="rep-mode-tabs" role="tablist" aria-label="Pilih tahap pengerjaan">
+              <button class="rep-mode-btn is-active" type="button" role="tab" aria-selected="true" data-fx="db">Database</button>
+              <button class="rep-mode-btn" type="button" role="tab" aria-selected="false" data-fx="ui">UI/UX Design</button>
+              <button class="rep-mode-btn" type="button" role="tab" aria-selected="false" data-fx="api">REST API</button>
+              <button class="rep-mode-btn" type="button" role="tab" aria-selected="false" data-fx="deploy">Deploy</button>
+              <button class="rep-mode-btn" type="button" role="tab" aria-selected="false" data-fx="qa">QA Testing</button>
+              <button class="rep-mode-btn" type="button" role="tab" aria-selected="false" data-fx="report">Laporan Data</button>
+            </div>
+          </div>
+          <div class="fx-win">
+            <div class="tb"><i class="tl"><b></b><b></b><b></b></i><span id="fxTitle">schema.sql</span><em class="fx-live"><i class="live-dot"></i>Hasilnya Dibawah Ini</em></div>
+            <div class="fx-body" id="fxBody"></div>
+            <div class="fx-foot"><span id="fxCap">Siap dijalankan…</span><span class="fx-foot-r"><button class="pause-btn" id="fxPause" type="button" aria-pressed="false">Jeda</button><span class="fx-prog"><i id="fxBar"></i></span></span></div>
+          </div>
+        </div>
+
+        <!-- 3. AI Automation Lite: dikendalikan penuh oleh user (manual trigger) -->
+        <div class="rep-sim glass reveal" id="aiSim">
+          <div class="rep-top">
+            <div>
+              <p class="eyebrow"><span class="live-dot"></span>AI Automation Lite</p>
+              <h3>Tanya apa saja tentang Nayura &amp; Website ini Yuk!</h3>
+            </div>
+          </div>
+
+          <div class="fx-win">
+            <div class="tb"><i class="tl"><b></b><b></b><b></b></i><span>automation_lite · interactive</span><em class="fx-live">Siap dijalankan user</em></div>
+            <div class="ai-body">
+              <section class="ai-col ai-in" aria-label="Pesan masuk">
+                <div class="ai-lbl"><b>Prompt / Pesan masuk</b><small id="aiSrc">Prompt user</small></div>
+                <div class="ai-msg">
+                  <textarea id="aiText" rows="6" spellcheck="false" placeholder="Tulis pertanyaan tentang Nayura, keahlian, proyek, atau web ini..." aria-label="Isi pesan masuk"></textarea>
+                  <div class="ai-view" id="aiView" hidden></div>
+                </div>
+                <div class="ai-act-row">
+                  <button class="ai-run" id="aiRun" type="button">Jalankan automation atau klik Enter</button>
+                      </div>
+              </section>
+
+              <section class="ai-col ai-pipe" aria-label="Tahapan pemrosesan">
+                <div class="ai-lbl"><b>Pipeline</b><small id="aiTime">—</small></div>
+                <ol class="ai-stages" id="aiStages">
+                  <li class="ai-st"><i class="ai-ic"></i><div><b>Terima pesan</b><small></small></div></li>
+                  <li class="ai-st"><i class="ai-ic"></i><div><b>Deteksi maksud &amp; konteks</b><small></small></div></li>
+                  <li class="ai-st"><i class="ai-ic"></i><div><b>Ekstraksi informasi</b><small></small></div></li>
+                  <li class="ai-st"><i class="ai-ic"></i><div><b>Validasi batasan pengetahuan</b><small></small><ul class="ai-rules"></ul></div></li>
+                  <li class="ai-st"><i class="ai-ic"></i><div><b>Susun respons &amp; aksi</b><small></small></div></li>
+                </ol>
+              </section>
+
+              <section class="ai-col ai-out" aria-label="Hasil">
+                <div class="ai-lbl"><b>payload.json</b><small id="aiRoute"></small></div>
+                <div class="ai-json" id="aiJson"></div>
+                <div class="ai-ax" id="aiAct"></div>
+                <div class="ai-reply" id="aiReply"><small>Respons AI Automation Lite</small><p id="aiReplyTxt"></p></div>
+              </section>
+            </div>
+            <div class="fx-foot">
+              <span id="aiCap">Tulis pertanyaanmu, lalu tekan Jalankan automation.</span>
+              <span class="fx-foot-r"><span class="fx-prog"><i id="aiBar"></i></span></span>
+            </div>
+          </div>
+
+          <details class="ai-how">
+            <summary>Bagaimana arsitektur AI Automation Lite ini bekerja?</summary>
+            <div class="ai-how-grid">
+              <ol class="ai-flow">
+                <li><b>1 · User Trigger</b><span>Hanya berjalan saat kamu menekan tombol Jalankan atau Enter, tidak berjalan sendiri.</span></li>
+                <li><b>2 · Intent &amp; Scope Guard</b><span>Mendeteksi apakah pertanyaan membahas Nayura, isi portofolio ini, alur operasional, atau di luar cakupan.</span></li>
+                <li><b>3 · Ekstraksi Terstruktur</b><span>Mengubah teks bebas menjadi struktur JSON yang tervalidasi sebelum diproses.</span></li>
+                <li><b>4 · Knowledge Boundary</b><span>Pertanyaan di luar profil pembuat &amp; web ini dijawab dengan penolakan ramah tanpa mengarang fakta.</span></li>
+              </ol>
+              <pre class="dev-code ai-code"><code id="aiCode"></code></pre>
+            </div>
+          </details>
+        </div>
+
+        <!-- Daftar Proyek Utama -->
+        <div class="bento">
+          <!-- Proyek 01: Skripsi -->
+          <article class="project glass feature reveal">
+            <div class="feature-main">
+              <div class="p-top">
+                <span class="p-tag">Skripsi · LPKU ITN Malang · 2026</span>
+                <span class="p-badge">Tugas Akhir S1</span>
+              </div>
+              <h3>Sistem Pendukung Keputusan Analisis Risiko Kerja Sama dan Kemitraan Perguruan Tinggi</h3>
+              <p>
+                Dikembangkan sebagai skripsi S1 Teknik Informatika di LPKU ITN Malang, sistem ini membantu
+                mengevaluasi tingkat risiko kerja sama dan kemitraan perguruan tinggi secara terukur agar keputusan
+                menjalin, memperpanjang, atau mengevaluasi kemitraan tidak hanya bergantung pada intuisi subjektif.
+              </p>
+              <p>
+                Proses kerjanya dimulai dari pengolahan serta pembersihan data kriteria dan riwayat kemitraan,
+                pembentukan model klasifikasi memakai algoritma <strong>Decision Tree</strong>, hingga pengujian model dan
+                skenario penggunaan bersama pihak terkait. Hasil pengujian dan output sistem menyajikan tingkat risiko
+                beserta aturan keputusan yang jelas sehingga memudahkan pimpinan dan pengelola unit menilai risiko secara
+                konsisten dan objektif.
+              </p>
+            </div>
+            <dl class="feature-meta">
+              <div><dt>Fungsi Utama</dt><dd>Menilai &amp; mengklasifikasikan risiko kemitraan perguruan tinggi</dd></div>
+              <div><dt>Tujuan &amp; Manfaat</dt><dd>Dasar keputusan menjalin atau melanjutkan kerja sama yang terstruktur</dd></div>
+              <div><dt>Proses &amp; Pengujian</dt><dd>Olahan data kriteria, Decision Tree, pengujian skenario &amp; validasi hasil</dd></div>
+              <div><dt>Output Sistem</dt><dd>Kategori risiko &amp; rekomendasi keputusan yang mudah dipahami</dd></div>
+            </dl>
+            <ul class="chips">
+              <li>Skripsi</li>
+              <li>Decision Tree</li>
+              <li>Analisis Data &amp; Risiko</li>
+              <li>Sistem Pendukung Keputusan</li>
+              <li>Pengujian Model</li>
+            </ul>
+          </article>
+
+          <!-- Proyek 02: Sistem Manajemen Kerja Sama -->
+          <article class="project glass big reveal" style="--d:.04s">
+            <div class="p-top">
+              <span class="p-tag">LPKU ITN Malang · 2026</span>
+              <span class="p-index">02</span>
+            </div>
+            <h3>Sistem Manajemen Kerja Sama MoU / PKS</h3>
+            <p>
+              Platform web untuk mengelola kerja sama antarinstansi/mitra secara terpusat, mulai dari pengajuan
+              dokumen, pemantauan progres, pengingat masa berlaku, rekap data, hingga pengarsipan dokumen digital.
+            </p>
+            <ul class="project-steps">
+              <li><strong>1. Analisis &amp; Perancangan Sistem:</strong> Menyusun kebutuhan sistem (requirement analysis) serta merancang alur proses bisnis pengelolaan kerja sama antarinstansi/mitra dan struktur basis data.</li>
+              <li><strong>2. Pengembangan Aplikasi &amp; Website:</strong> Mengembangkan portal pengajuan dan administrasi pendaftaran kerja sama (MoU &amp; PKS), dashboard monitoring status, tahapan, dan evaluasi capaian kerja sama, sistem notifikasi otomatis untuk masa berlaku perjanjian dan pelaporan berkala, serta manajemen repositori dokumen digital secara terintegrasi dan aman.</li>
+              <li><strong>3. Pengujian &amp; Pengintegrasian:</strong> Melakukan unit testing, User Acceptance Testing (UAT), dan perbaikan bug untuk memastikan keandalan, alur data, serta keamanan sistem.</li>
+              <li><strong>4. Implementasi &amp; Pelaporan:</strong> Mendampingi proses deployment ke server, menyusun dokumentasi teknis serta rekap laporan, memberikan pelatihan pengguna (user training), dan menjaga kelancaran operasional secara konsisten.</li>
+            </ul>
+            <ul class="chips">
+              <li>Software Engineering</li>
+              <li>Portal MoU / PKS</li>
+              <li>Dashboard &amp; Rekap</li>
+              <li>Notifikasi Otomatis</li>
+              <li>Repositori Dokumen</li>
+              <li>Unit Testing &amp; UAT</li>
+              <li>Deployment &amp; Training</li>
+            </ul>
+          </article>
+
+          <!-- Proyek 03: Website Company Profile -->
+          <article class="project glass sm reveal" style="--d:.08s">
+            <div class="p-top">
+              <span class="p-tag">LPKU ITN Malang · 2026</span>
+              <span class="p-index">03</span>
+            </div>
+            <h3>Website Company Profile</h3>
+            <p>
+              Website profil institusi yang dikembangkan sebagai bagian terintegrasi dari sistem untuk menyajikan
+              informasi profil unit, layanan kerja sama, alur kemitraan, dan pembaruan kegiatan secara jelas,
+              terstruktur, dan responsif di berbagai perangkat.
+            </p>
+            <ul class="chips">
+              <li>Frontend</li>
+              <li>Terintegrasi Sistem</li>
+              <li>Responsif</li>
+            </ul>
+          </article>
+
+          <!-- Proyek 04: Aplikasi Desktop Monitoring Forecast Barang -->
+          <article class="project glass sm reveal" style="--d:.12s">
+            <div class="p-top">
+              <span class="p-tag">PT. Asahi Best Base Indonesia · 2025</span>
+              <span class="p-index">04</span>
+            </div>
+            <h3>Aplikasi Desktop Monitoring Forecast Barang</h3>
+            <p>
+              Aplikasi desktop untuk memantau barang forecast dengan alur pengguna yang terbagi antara
+              <strong>Operator</strong> dan <strong>Leader</strong>, dilengkapi fitur autentikasi pada login untuk
+              mengatur hak akses sesuai peran.
+            </p>
+            <p>
+              Menyediakan fitur CRUD dan rekap data mulai dari nama barang, part number, hari dan tanggal in/out,
+              jumlah, field catatan, tanda tangan operator, validasi hari dan tanggal untuk memastikan pergerakan
+              barang masuk dan keluar, hingga cetak laporan PDF.
+            </p>
+            <ul class="chips">
+              <li>Desktop App</li>
+              <li>Login &amp; Hak Akses</li>
+              <li>Operator &amp; Leader</li>
+              <li>CRUD &amp; Rekap In/Out</li>
+              <li>Tanda Tangan &amp; Cetak PDF</li>
+            </ul>
+          </article>
+
+          <!-- Proyek 05: Optimasi Frontend Website Company Profile -->
+          <article class="project glass wide reveal" style="--d:.16s">
+            <div class="p-top">
+              <span class="p-tag">PT. Asahi Best Base Indonesia · 2025</span>
+              <span class="p-index">05</span>
+            </div>
+            <h3>Optimasi Frontend Website Company Profile</h3>
+            <p>
+              Pengembangan dan penyempurnaan tampilan frontend website company profile perusahaan agar tata letak lebih
+              rapi, konsistensi visual terjaga, navigasi lebih jelas, serta nyaman diakses di berbagai ukuran layar
+              dengan struktur komponen modular yang ringan dan mudah dirawat.
+            </p>
+            <ul class="chips">
+              <li>HTML5</li>
+              <li>CSS3</li>
+              <li>JavaScript / TypeScript</li>
+              <li>Arsitektur Komponen</li>
+              <li>Responsif</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- KONTAK -->
+    <section class="section" id="kontak">
+      <div class="container">
+        <div class="ct-hero reveal">
+          <div class="ct-aurora" aria-hidden="true"><i></i><i></i></div>
+          <p class="ct-pill"><span class="live-dot"></span><span id="ctStatus">Tersedia untuk diskusi</span><em id="ctClock">--:-- WIB</em></p>
+          <h2>Yuk, ngobrol <span>santai.</span></h2>
+          <p class="ct-sub">Terbuka untuk full-time, hybrid, maupun remote.</p>
+          <div class="ct-cta">
+            <a class="btn btn-light" href="mailto:arsinedanayura@gmail.com">Kirim Email</a>
+            <a class="btn btn-ghost" href="https://wa.me/6281219072423" target="_blank" rel="noopener noreferrer">Chat WhatsApp</a>
+            <button class="btn btn-ghost" type="button" id="copyEmail">Salin Email</button>
+          </div>
+          <ul class="ct-links" aria-label="Kontak &amp; media sosial">
+            <li><a href="mailto:arsinedanayura@gmail.com"><span class="ct-ico"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg></span><span class="ct-lbl">Email</span><span class="ct-val"></span></a></li>
+            <li><a href="https://wa.me/6281219072423" target="_blank" rel="noopener noreferrer"><span class="ct-ico"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.7-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg></span><span class="ct-lbl">WhatsApp</span><span class="ct-val"></span></a></li>
+            <li><a href="https://www.linkedin.com/in/nayuraarsineda" target="_blank" rel="noopener noreferrer"><span class="ct-ico"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11.5H3zM9.75 9.75h3.83v1.57h.06c.53-1 1.84-2.07 3.78-2.07 4.04 0 4.78 2.66 4.78 6.1v5.9h-4v-5.23c0-1.25-.02-2.85-1.74-2.85-1.74 0-2.01 1.36-2.01 2.76v5.32h-4z"/></svg></span><span class="ct-lbl">LinkedIn</span><span class="ct-val"></span></a></li>
+            <li><a href="https://instagram.com/n.arssineda" target="_blank" rel="noopener noreferrer"><span class="ct-ico"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></span><span class="ct-lbl">Instagram</span><span class="ct-val"></span></a></li>
+          </ul>
+        </div>
+        </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>© <span id="year">2026</span> Nayura Arsineda.</p>
+      <a href="#home" class="to-top">Kembali ke atas ↑</a>
+    </div>
+  </footer>
+
+  <!-- Lightbox sertifikat -->
+  <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Pratinjau sertifikat">
+    <div class="lb-backdrop" data-close></div>
+    <figure class="lb-body glass">
+      <button class="lb-close icon-btn" type="button" data-close aria-label="Tutup">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <div class="lb-media" id="lbMedia">
+        <img id="lbImg" alt="" />
+        <iframe id="lbPdf" title="Dokumen sertifikat PDF" hidden></iframe>
+      </div>
+      <figcaption class="lb-foot">
+        <div>
+          <span class="lb-title" id="lbTitle"></span>
+          <span class="lb-sub" id="lbSub"></span>
+        </div>
+        <a class="btn btn-dark btn-small lb-open" id="lbOpen" href="#" target="_blank" rel="noopener noreferrer">Buka PDF</a>
+      </figcaption>
+      <button class="lb-nav lb-prev icon-btn" id="lbPrev" type="button" aria-label="Sebelumnya">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
+      </button>
+      <button class="lb-nav lb-next icon-btn" id="lbNext" type="button" aria-label="Berikutnya">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+    </figure>
+  </div>
+
+  <div class="toast glass" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js" defer></script>
+
+  <!-- Kontroler intro: hitung 0-100, lalu tirai terbelah -->
+  <script>
+  (function () {
+    var d = document.documentElement, boot = document.getElementById('boot');
+    if (!boot) return;
+    if (!d.classList.contains('intro')) { boot.remove(); return; }
+    try { sessionStorage.setItem('nx-boot', '1'); } catch (e) {}
+    var bar = document.getElementById('bootBar'), num = document.getElementById('bootNum');
+    var start = performance.now(), dur = 1700, done = false;
+    var ease = function (t) { return t === 1 ? 1 : 1 - Math.pow(2, -9 * t); };
+    function finish() {
+      if (done) return; done = true;
+      bar.style.transform = 'scaleX(1)'; num.textContent = '100';
+      setTimeout(function () {
+        boot.classList.add('out');
+        setTimeout(function () { d.classList.remove('intro'); }, 380);
+        setTimeout(function () { boot.remove(); }, 1500);
+      }, 260);
+    }
+    function tick(now) {
+      if (done) return;
+      var t = Math.min((now - start) / dur, 1), k = ease(t);
+      bar.style.transform = 'scaleX(' + k.toFixed(3) + ')';
+      num.textContent = String(Math.round(k * 100)).padStart(3, '0');
+      if (t >= 1) return finish();
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+    ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (e) { addEventListener(e, finish, { once: true, passive: true }); });
+    setTimeout(finish, 3600);
+  })();
+  </script>
+</body>
+</html>
