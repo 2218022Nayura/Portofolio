@@ -287,9 +287,12 @@
   const DOT_W = 42;
   let greeting = false;
 
-  const buildLine = (text) => {
+  const buildLine = (text, maxW) => {
     helloText.textContent = '';
     helloText.className = 'hello-text';
+    helloText.style.fontSize = '';
+    helloText.style.transform = 'translate(-50%, -50%)';
+
     Array.from(text).forEach((ch, i) => {
       const s = document.createElement('span');
       s.className = 'ch';
@@ -297,35 +300,62 @@
       s.textContent = ch === ' ' ? '\u00A0' : ch;
       helloText.appendChild(s);
     });
-    return helloText.getBoundingClientRect().width;
+
+    const padX = 32; // ruang napas kiri & kanan yang proporsional di dalam pill
+    const availTextW = Math.max(DOT_W, maxW - padX);
+    let rawW = helloText.getBoundingClientRect().width;
+
+    // Turunkan font-size secara proporsional jika kepanjangan di layar sempit
+    if (rawW > availTextW && rawW > 0) {
+      const baseFs = parseFloat(getComputedStyle(helloText).fontSize) || 13;
+      const ratio = availTextW / rawW;
+      const nextFs = Math.max(10.5, baseFs * ratio);
+      helloText.style.fontSize = nextFs.toFixed(2) + 'px';
+      rawW = helloText.getBoundingClientRect().width;
+    }
+
+    // Cadangan skala jika layar sangat sempit
+    if (rawW > availTextW && rawW > 0) {
+      const scale = Math.max(0.78, availTextW / rawW);
+      helloText.style.transform = `translate(-50%, -50%) scale(${scale.toFixed(3)})`;
+      rawW = rawW * scale;
+    }
+
+    return Math.ceil(rawW) + padX;
   };
 
   async function sayHello() {
     if (greeting || !hello) return;
     greeting = true;
+    hello.setAttribute('aria-expanded', 'true');
     hello.classList.add('is-open');
-    helloLive.textContent = GREETINGS.join('. ');
-    const maxW = Math.max(DOT_W, hello.parentElement.clientWidth - 24);
+    if (helloLive) helloLive.textContent = GREETINGS.join('. ');
+
+    const wrapBox = hello.parentElement;
+    const maxW = Math.max(DOT_W, (wrapBox ? wrapBox.clientWidth : hello.clientWidth) - 20);
 
     for (const line of GREETINGS) {
-      const w = buildLine(line);
-      hello.style.width = Math.min(Math.ceil(w) + 40, maxW) + 'px';
-      await sleep(reduceMotion ? 0 : 280);
+      const targetW = Math.min(buildLine(line, maxW), maxW);
+      hello.style.width = Math.max(DOT_W, targetW) + 'px';
+      await sleep(reduceMotion ? 0 : 240);
       void helloText.offsetWidth;
       helloText.classList.add('in');
-      await sleep(reduceMotion ? 800 : 380 + line.length * 20 + 600);
+      await sleep(reduceMotion ? 850 : 420 + line.length * 16 + 750);
       helloText.classList.remove('in');
       helloText.classList.add('out');
-      await sleep(reduceMotion ? 0 : 220 + line.length * 10);
+      await sleep(reduceMotion ? 0 : 240 + line.length * 7);
     }
 
     helloText.textContent = '';
     helloText.className = 'hello-text';
+    helloText.style.fontSize = '';
+    helloText.style.transform = '';
     hello.style.width = DOT_W + 'px';
-    await sleep(reduceMotion ? 0 : 500);
+    await sleep(reduceMotion ? 0 : 520);
     hello.classList.remove('is-open');
+    hello.setAttribute('aria-expanded', 'false');
     hello.style.width = '';
-    helloLive.textContent = '';
+    if (helloLive) helloLive.textContent = '';
     greeting = false;
   }
   if (hello) hello.addEventListener('click', sayHello);
@@ -422,7 +452,7 @@
     const audit = (msg) => { const prev = WEB.audit.length ? WEB.audit[WEB.audit.length - 1].h : '00000000'; const t = hms(); WEB.audit.push({ t, msg, h: hash(prev + msg + t) }); };
 
     const SCENES = {
-      /* ===================== DESKTOP · FORECAST (4 MODUL) ===================== */
+      /* ===================== DESKTOP · FORECAST ===================== */
       desktop: [
         {
           label: '1. Login & hak akses role', file: 'auth_role.py', tag: 'Role Access',
@@ -584,7 +614,7 @@
         }
       ],
 
-      /* ===================== MOBILE · KARYAWAN (4 MODUL) ===================== */
+      /* ===================== MOBILE · KARYAWAN ===================== */
       mobile: [
         {
           label: '1. Check-in GPS & geofence', file: 'checkin.ts', tag: 'Absensi GPS',
@@ -713,7 +743,7 @@
         }
       ],
 
-      /* ===================== WEB · ADMINISTRASI (4 MODUL) ===================== */
+      /* ===================== WEB · ADMINISTRASI ===================== */
       web: [
         {
           label: '1. Dashboard monitoring MoU/PKS', file: 'monitoring.py', tag: 'Dashboard', url: 'admin.portal.local/dashboard',
@@ -893,7 +923,7 @@
   }
 
   /* ======================================================================
-     2. STUDIO FULL-STACK — Database, UI/UX, Deploy, QA, Laporan Data (Diperdalam)
+     2. STUDIO FULL-STACK — Database, UI/UX, Deploy, QA, Laporan Data
      ====================================================================== */
   const fxBody = $('#fxBody');
   if (fxBody) {
@@ -921,7 +951,6 @@
     const svgNS = 'http://www.w3.org/2000/svg';
 
     const SC = {
-      /* ---------- DATABASE: Skema, Relasi FK & Indexing ---------- */
       db: {
         title: 'schema_migration.sql · PostgreSQL 16',
         mount(b) {
@@ -958,7 +987,6 @@
         }
       },
 
-      /* ---------- UI / UX: Wireframe, Design Tokens, Contrast & Dark Mode ---------- */
       ui: {
         title: 'Apple HIG Design System · Component Token',
         mount(b) {
@@ -986,7 +1014,6 @@
         }
       },
 
-      /* ---------- REST API: request, status, response ---------- */
       api: {
         title: 'api_test.http · REST Client',
         mount(b) {
@@ -1013,7 +1040,6 @@
         }
       },
 
-      /* ---------- DEPLOY: CI/CD, Health Check, SSL & Zero-Downtime ---------- */
       deploy: {
         title: 'ci_cd_pipeline.sh · Linux Production Server',
         mount(b) {
@@ -1045,7 +1071,6 @@
         }
       },
 
-      /* ---------- QA: Automated Test Suite & Bug Patching ---------- */
       qa: {
         title: 'pytest --cov=app · UAT & Edge-Case Matrix',
         mount(b) {
@@ -1080,7 +1105,6 @@
         }
       },
 
-      /* ---------- LAPORAN DATA: Formula, KPI & Multi-Format Export ---------- */
       report: {
         title: 'rekap_operasional_q3.xlsx · Data & Pelaporan',
         mount(b) {
@@ -1134,9 +1158,8 @@
 
   /* ======================================================================
      3. AI AUTOMATION LITE — Tidak jalan otomatis (Manual Trigger oleh User)
-     Normalisasi slang/typo, pahami konteks ketersediaan vs tawaran rekrutmen,
-     arahkan kontak hanya lewat email (tanpa nomor WA), sapa balik dinamis,
-     jelaskan alasan desain web, dan batasi tegas topik di luar cakupan.
+     Normalisasi slang/typo, pemahaman luas tentang Nayura & si pembuat,
+     kontak hanya lewat Gmail (tanpa WA), dan guard batasan pengetahuan.
      ====================================================================== */
   const aiSim = $('#aiSim');
   if (aiSim) {
@@ -1155,7 +1178,7 @@
     const plus = (n) => { const d = today(); d.setDate(d.getDate() + n); if (d.getDay() === 0) d.setDate(d.getDate() + 1); return d; };
 
     const SAMPLES = {
-      pembuat: { src: 'Contoh · Profil Pembuat', text: 'Halo! Sistem portofolio ini keren banget, siapa pembuatnya dan lulusan mana?' },
+      pembuat: { src: 'Contoh · Profil Pembuat', text: 'Ceritakan singkat tentang Nayura si pembuat web ini!' },
       skill: { src: 'Contoh · Keahlian', text: 'Nayura menguasai bahasa pemrograman, framework, dan tools pelaporan apa saja?' },
       proyek: { src: 'Contoh · Proyek & Skripsi', text: 'Boleh ceritakan soal skripsi dan proyek yang pernah dikerjakan Nayura?' },
       web: { src: 'Contoh · Tentang Web', text: 'Web ini dibangun pakai apa aja, dan kok tampilannya dibuat begini aja?' },
@@ -1176,7 +1199,6 @@
     const BAD = ['anjing', 'anjir', 'bangsat', 'bajingan', 'brengsek', 'sialan', 'kampret', 'tolol', 'goblok', 'bodoh', 'bego', 'idiot', 'babi', 'tai', 'asu', 'kontol', 'memek', 'jancok', 'fuck', 'shit', 'bitch', 'stupid'];
     const BADRE = new RegExp('\\b(' + BAD.map((w) => w.split('').map((c) => c + '+').join('')).join('|') + ')\\b', 'i');
 
-    // Normalisasi bahasa gaul, singkatan, dan typo umum agar pemahaman intent lebih akurat
     const SLANG = [
       [/\b(ga|gak|ngga|nggak|gk|tdk|bkn)\b/g, 'tidak'],
       [/\b(udh|ud|udah|sdh)\b/g, 'sudah'],
@@ -1195,7 +1217,9 @@
       [/\b(org|orng)\b/g, 'orang'],
       [/\b(bgs|bagus)\b/g, 'bagus'],
       [/\b(pinter|pinteran|pintar)\b/g, 'cerdas'],
-      [/\b(kyk|kayak|kek)\b/g, 'seperti']
+      [/\b(kyk|kayak|kek)\b/g, 'seperti'],
+      [/\b(tntg|ttg)\b/g, 'tentang'],
+      [/\b(ceritain|critain|jelasin|jelaskan|kenalin)\b/g, 'ceritakan']
     ];
 
     function normalizeText(low) {
@@ -1233,6 +1257,16 @@
     }
 
     const KB = [
+      { id: 'tanya_pembuat', label: 'Tentang Nayura (Si Pembuat)',
+        kw: [
+          'nayura', 'arsineda', 'siapa pembuat', 'si pembuat', 'pembuatnya', 'pembuat', 'pencipta',
+          'creator', 'author', 'siapa yang buat', 'siapa yang bangun', 'siapa dibalik', 'dibalik web',
+          'tentang nayura', 'tentang pembuat', 'ceritakan tentang', 'ceritakan singkat', 'ringkasan profil',
+          'profil', 'biodata', 'bio', 'kenalan', 'perkenalan', 'sosok', 'developer', 'programmer',
+          'dibuat oleh', 'pemilik', 'latar belakang', 'dia siapa', 'beliau siapa', 'orangnya'
+        ],
+        reply: (_co, _low, greet) => `${greet}Nayura Arsineda, S.Kom adalah lulusan S1 Teknik Informatika ITN Malang (2026) dengan IPK 3,50 yang berdomisili di Cakung Timur, Jakarta Timur. Sebagai Software Engineer & Data/Reporting Specialist, ia fokus membangun aplikasi web dan desktop yang rapi (Python, Django, Laravel, JS/TS, SQL) sekaligus terbiasa mengolah data serta menyusun laporan operasional secara terstruktur.`,
+        sug: ['Apa saja keahlian Nayura?', 'Ceritakan proyek & pengalaman Nayura', 'Apakah Nayura masih terbuka untuk perusahaan?'] },
       { id: 'tawaran_kerja', label: 'Ketersediaan & Peluang Kerja',
         kw: ['nganggur', 'terbuka', 'open to work', 'nyari kerja', 'cari kerja', 'available', 'peluang kerja', 'tawar', 'nawarin', 'menawarkan', 'posisi', 'lowongan', 'rekrut', 'hiring', 'vacancy', 'karir', 'karier', 'bergabung', 'wawancara', 'interview', 'kandidat', 'bersedia', 'recruit', 'join tim', 'terbuka untuk', 'cocok untuk', 'sibuk apa'],
         reply: (co, low, greet) => {
@@ -1242,24 +1276,20 @@
           const isRecruiterPitch = /\b(kami\s+dari|saya\s+dari|menawarkan|nawarin|ngajak|mengundang|invite|wawancara|interview)\b/i.test(low) || Boolean(co);
 
           if (isIdleQuery) {
-            return `${greet}Nayura tetap aktif berkarya dan mengasah kemampuannya—baik lewat proyek maupun pengembangan diri—dan beliau masih terbuka untuk peluang kerja di perusahaan (full-time, hybrid, maupun remote) di bidang software engineering (web & aplikasi desktop), pengolahan/analisis data, serta pelaporan/dokumentasi. Kalau ada peluang atau ingin berdiskusi, kamu bisa hubungi lewat email ke arsinedanayura@gmail.com.`;
+            return `${greet}Nayura tetap aktif berkarya dan mengasah kemampuannya—baik lewat proyek maupun pengembangan diri—dan beliau masih terbuka untuk peluang kerja di perusahaan (full-time, hybrid, maupun remote) di bidang software engineering (web & aplikasi desktop), pengolahan/analisis data, serta pelaporan/dokumentasi. Kalau ada peluang atau ingin berdiskusi, kamu bisa hubungi lewat Gmail ke arsinedanayura@gmail.com.`;
           }
           if (fit.fit === 'mismatch') {
-            return `${greet}Kalau untuk peran ${fit.roleName}${inst}, sepertinya kurang sesuai dengan jalur utama Nayura—fokusnya ada di pengembangan software (web & aplikasi desktop), pengolahan/analisis data, serta pelaporan/dokumentasi. Kalau ada peluang yang nyambung ke area tersebut, Nayura terbuka untuk berdiskusi (full-time, hybrid, maupun remote). Kamu bisa hubungi lewat email ke arsinedanayura@gmail.com.`;
+            return `${greet}Kalau untuk peran ${fit.roleName}${inst}, sepertinya kurang sesuai dengan jalur utama Nayura—fokusnya ada di pengembangan software (web & aplikasi desktop), pengolahan/analisis data, serta pelaporan/dokumentasi. Kalau ada peluang yang nyambung ke area tersebut, Nayura terbuka untuk berdiskusi (full-time, hybrid, maupun remote). Kamu bisa hubungi lewat Gmail ke arsinedanayura@gmail.com.`;
           }
           if (!isRecruiterPitch) {
-            return `${greet}Ya, Nayura masih terbuka untuk peluang kerja di perusahaan—baik full-time, hybrid, maupun remote—terutama di bidang yang sesuai fokusnya: software engineering (web & aplikasi desktop), pengolahan/analisis data, serta pelaporan/dokumentasi. Jika tertarik berdiskusi lebih lanjut, kamu bisa hubungi lewat email ke arsinedanayura@gmail.com.`;
+            return `${greet}Ya, Nayura masih terbuka untuk peluang kerja di perusahaan—baik full-time, hybrid, maupun remote—terutama di bidang yang sesuai fokusnya: software engineering (web & aplikasi desktop), pengolahan/analisis data, serta pelaporan/dokumentasi. Jika tertarik berdiskusi lebih lanjut, kamu bisa hubungi lewat Gmail ke arsinedanayura@gmail.com.`;
           }
           if (fit.fit === 'check_scope') {
-            return `${greet}Nayura terbuka untuk peluang kerja di perusahaan${inst} (full-time, hybrid, maupun remote), khususnya di area software engineering, pengolahan/analisis data, dan pelaporan/dokumentasi. Jika perannya sesuai dengan fokus tersebut, kamu bisa hubungi langsung lewat email ke arsinedanayura@gmail.com.`;
+            return `${greet}Nayura terbuka untuk peluang kerja di perusahaan${inst} (full-time, hybrid, maupun remote), khususnya di area software engineering, pengolahan/analisis data, dan pelaporan/dokumentasi. Jika perannya sesuai dengan fokus tersebut, kamu bisa hubungi langsung lewat Gmail ke arsinedanayura@gmail.com.`;
           }
-          return `${greet}Posisi tersebut sejalan dengan fokus Nayura di software engineering (web & aplikasi desktop), data, serta pelaporan/dokumentasi, dan beliau terbuka untuk peluang full-time, hybrid, maupun remote${inst}. Untuk diskusi lebih lanjut, kamu bisa hubungi lewat email ke arsinedanayura@gmail.com.`;
+          return `${greet}Posisi tersebut sejalan dengan fokus Nayura di software engineering (web & aplikasi desktop), data, serta pelaporan/dokumentasi, dan beliau terbuka untuk peluang full-time, hybrid, maupun remote${inst}. Untuk diskusi lebih lanjut, kamu bisa hubungi lewat Gmail ke arsinedanayura@gmail.com.`;
         },
-        sug: ['Apa saja keahlian Nayura?', 'Ceritakan proyek yang pernah dikerjakan', 'Bagaimana cara menghubungi Nayura?'] },
-      { id: 'tanya_pembuat', label: 'Tentang Pembuat (Nayura)',
-        kw: ['siapa pembuat', 'siapa yang buat', 'siapa yang bikin', 'siapa yang bangun', 'siapa nayura', 'tentang nayura', 'pembuat', 'pencipta', 'developer', 'programmer', 'dibuat oleh', 'dibikin', 'profil', 'biodata', 'pemilik', 'latar belakang'],
-        reply: (_co, _low, greet) => `${greet}Web portofolio ini dibuat sendiri oleh Nayura Arsineda, S.Kom, lulusan S1 Teknik Informatika ITN Malang (2026) dengan IPK 3,50, berdomisili di Cakung Timur, Jakarta Timur. Fokus utamanya di pengembangan software (web & desktop), pengolahan/analisis data, serta penyusunan laporan & dokumentasi kerja yang terstruktur.`,
-        sug: ['Apa saja keahlian Nayura?', 'Ceritakan proyek yang pernah dikerjakan', 'Apakah Nayura masih terbuka untuk perusahaan?'] },
+        sug: ['Ceritakan tentang Nayura', 'Apa saja keahlian Nayura?', 'Ceritakan proyek yang pernah dikerjakan'] },
       { id: 'tanya_skill', label: 'Keahlian & Tech Stack',
         kw: ['skill', 'keahlian', 'kemampuan', 'bisa apa', 'tech stack', 'teknologi apa', 'bahasa pemrograman', 'framework', 'django', 'laravel', 'excel', 'sql', 'python', 'javascript', 'typescript', 'angular', 'database', 'postgres', 'mysql', 'git ', 'menguasai', 'jago', 'melenceng', 'fokus', 'koding', 'coding'],
         reply: (_co, _low, greet) => `${greet}Fokus kemampuan Nayura mencakup software, data, dan pelaporan: HTML5, CSS3, JavaScript (ES6+), TypeScript (pola komponen Angular), Python, Django, dan Laravel, dengan database PostgreSQL & MySQL. Di sisi data & operasional, beliau terbiasa mengolah data, analisis/Decision Tree, rekap rutin, serta menyusun laporan di Excel, Google Sheets, Word, Google Docs, dan PowerPoint.`,
@@ -1273,21 +1303,21 @@
         reply: (_co, _low, greet) => `${greet}Nayura menempuh pendidikan di SMAN 115 Jakarta Utara (IPA) lalu lulus S1 Teknik Informatika ITN Malang tahun 2026 dengan IPK 3,50. Beliau juga mengikuti Studi Independen MSIB Batch 7 (International Software Engineer Diploma — Python Web Developer: Django, PostgreSQL & MySQL), kursus Dicoding (Basic Website & JavaScript), serta memiliki 12 sertifikat yang dapat dilihat langsung di bagian Sertifikasi.`,
         sug: ['Apa saja keahlian Nayura?', 'Ceritakan proyek yang pernah dikerjakan', 'Bagaimana cara menghubungi Nayura?'] },
       { id: 'tanya_kontak', label: 'Kontak & Domisili',
-        kw: ['kontak', 'hubungi', 'menghubungi', 'email', 'nomor telepon', 'nomor kontak', 'linkedin', 'instagram', 'ig ', 'domisili', 'tinggal', 'lokasi', 'alamat', 'jakarta', 'cakung', 'cv'],
-        reply: (_co, _low, greet) => `${greet}Nayura berdomisili di Cakung Timur, Jakarta Timur. Kamu bisa hubungi lewat email ke arsinedanayura@gmail.com, atau lihat profilnya di LinkedIn (nayuraarsineda) dan Instagram (@n.arssineda). Di bagian atas halaman juga tersedia tombol Unduh CV.`,
-        sug: ['Apakah Nayura masih terbuka untuk perusahaan?', 'Apa saja keahlian Nayura?'] },
+        kw: ['kontak', 'hubungi', 'menghubungi', 'email', 'gmail', 'wa ', 'whatsapp', 'nomor', 'linkedin', 'instagram', 'ig ', 'domisili', 'tinggal', 'lokasi', 'alamat', 'jakarta', 'cakung', 'cv'],
+        reply: (_co, _low, greet) => `${greet}Nayura berdomisili di Cakung Timur, Jakarta Timur. Untuk menjaga privasi, kontak langsung diarahkan melalui Gmail ke arsinedanayura@gmail.com (atau tombol Kirim Email di halaman ini), sedangkan nomor telepon tercantum di dokumen CV yang bisa diunduh di bagian atas. Kamu juga bisa terhubung lewat LinkedIn (nayuraarsineda) dan Instagram (@n.arssineda).`,
+        sug: ['Ceritakan tentang Nayura', 'Apakah Nayura masih terbuka untuk perusahaan?'] },
       { id: 'tanya_web', label: 'Tentang Web Portofolio Ini',
         kw: ['web ini', 'website ini', 'situs ini', 'fitur', 'demo', 'animasi', 'cara kerja', 'dibangun', 'dibuat pakai', 'pake apa', 'pakai apa', 'kok gitu', 'kok gtu', 'kenapa begini', 'kenapa gini', 'monokrom', 'polos', 'sederhana', 'vanilla', 'responsif', 'teknologi web', 'tampilan'],
         reply: (_co, _low, greet) => `${greet}Web portofolio ini dibangun menggunakan HTML5, CSS3, dan JavaScript murni (dengan pola reactive signal ala Angular Signals), tanpa framework berat. Tampilannya sengaja dibuat bersih dan monokrom agar tenang, rapi, dan fokus ke isi serta interaksi nyata—seperti 3 demo perangkat (Desktop Forecast, Mobile Karyawan, Web Administrasi), simulasi alur Full-Stack dari database sampai laporan, galeri 12 sertifikat PDF, dan AI Automation Lite ini.`,
-        sug: ['Kamu itu siapa dan bagaimana cara kerjamu?', 'Siapa pembuat web ini?', 'Ceritakan proyek yang pernah dikerjakan'] },
+        sug: ['Ceritakan tentang Nayura', 'Kamu itu siapa dan bagaimana cara kerjamu?', 'Ceritakan proyek yang pernah dikerjakan'] },
       { id: 'tanya_ai', label: 'Tentang AI Automation Lite',
         kw: ['kamu siapa', 'siapa kamu', 'lo siapa', 'kamu itu', 'ai automation', 'chatbot', 'asisten', 'chatgpt', 'pakai ai', 'pinter', 'pintar', 'cerdas', 'automation', 'kok jawab', 'kenapa jawab', 'tes dulu'],
-        reply: (_co, _low, greet) => `${greet}Aku AI Automation Lite di web portofolio Nayura. Aku jalan langsung di browser saat tombol Jalankan ditekan, dan dirancang khusus untuk menjawab seputar profil Nayura, keahlian, proyek/skripsi, ketersediaan kerja, serta isi & desain web ini. Jika ada pertanyaan di luar cakupan tersebut, aku akan terus terang menyampaikan batasan pengetahuanku.`,
-        sug: ['Apakah Nayura masih terbuka untuk perusahaan?', 'Siapa pembuat web ini?', 'Web ini dibangun pakai apa aja?'] },
+        reply: (_co, _low, greet) => `${greet}Aku AI Automation Lite di web portofolio Nayura. Aku jalan langsung di browser saat tombol Jalankan atau Enter ditekan, dan dirancang khusus untuk menjawab seputar profil Nayura, keahlian, proyek/skripsi, ketersediaan kerja, serta isi & desain web ini. Jika ada pertanyaan di luar cakupan tersebut, aku akan terus terang menyampaikan batasan pengetahuanku.`,
+        sug: ['Ceritakan tentang Nayura', 'Apakah Nayura masih terbuka untuk perusahaan?', 'Web ini dibangun pakai apa aja?'] },
       { id: 'sapaan', label: 'Sapaan Ramah', short: true,
         kw: ['halo', 'hai ', 'hi ', 'hello', 'hey', 'hallo', 'assalamualaikum', 'selamat pagi', 'selamat siang', 'selamat sore', 'selamat malam', 'permisi', 'pagi', 'siang', 'sore', 'malam'],
         reply: (_co, _low, greet) => `${greet || 'Halo! '}Ada yang ingin ditanyakan? Kamu bisa tanya soal Nayura, apakah masih terbuka untuk perusahaan, keahliannya, proyek/skripsinya, hingga alasan desain web portofolio ini.`,
-        sug: ['Apakah Nayura masih terbuka untuk perusahaan?', 'Siapa pembuat web ini?', 'Web ini dibangun pakai apa aja?'] },
+        sug: ['Ceritakan tentang Nayura', 'Apakah Nayura masih terbuka untuk perusahaan?', 'Web ini dibangun pakai apa aja?'] },
       { id: 'terima_kasih', label: 'Ucapan Terima Kasih', short: true,
         kw: ['terima kasih', 'makasih', 'thanks', 'thx', 'mantap', 'keren', 'sip', 'oke'],
         reply: (_co, _low, greet) => `${greet}Sama-sama! Jika masih ada yang ingin ditanyakan seputar Nayura atau web portofolio ini, silakan tanyakan saja.`,
@@ -1313,7 +1343,6 @@
         };
       }
 
-      // Cek apakah pesan adalah input operasional (contoh lembur)
       if (/\blembur\b/i.test(norm) && /\b\d{1,2}\s*jam\b/i.test(norm)) {
         const nm = grab(/\b[Ss]aya\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+){0,2})/, text);
         const un = grab(/\bdari\s+(?:tim\s+|bagian\s+|divisi\s+)?([A-Z][a-z]+)/, text);
@@ -1336,25 +1365,24 @@
         };
       }
 
-      // Scoring intent setelah normalisasi slang & typo
       const words = norm.trim().split(' ').length;
       const hits = KB.map((k) => {
         let sc = 0;
         k.kw.forEach((w) => {
           const nw = normalizeText(w).trim();
-          if (norm.includes(' ' + nw)) sc += nw.includes(' ') ? 3.5 : nw.length > 3 ? 2 : 1.2;
+          if (norm.includes(' ' + nw)) sc += nw.includes(' ') ? 3.5 : nw.length > 3 ? 2.2 : 1.2;
         });
         if (k.short && words > 8) sc = 0;
         return { k, sc };
       }).filter((x) => x.sc > 0).sort((a, b) => b.sc - a.sc);
 
       if (hits.length) {
-        const top = hits[0], k = top.k, sec = hits.find((x) => x !== top && x.sc >= 2 && !x.k.short && !k.short);
+        const top = hits[0], k = top.k, sec = hits.find((x) => x !== top && x.sc >= 2.2 && !x.k.short && !k.short);
         const co = grab(/\b((?:PT|CV)\.?\s+[A-Z][A-Za-z]+(?:\s[A-Z][A-Za-z]+)?)/, text);
         const fields = [{ key: 'topik', v: k.label, j: JSON.stringify(k.id) }];
         if (co) fields.push({ key: 'instansi', v: co.v, j: JSON.stringify(co.v) });
         if (sec) fields.push({ key: 'topik_tambahan', v: sec.k.label, j: JSON.stringify(sec.k.id) });
-        const conf = Math.min(0.99, 0.65 + top.sc * 0.06);
+        const conf = Math.min(0.99, 0.68 + top.sc * 0.06);
         return {
           cat: k.id, label: k.label, conf, pct: Math.round(conf * 100), fields,
           rules: [[true, 'Topik terdeteksi dalam cakupan portofolio'], [true, 'Data terverifikasi dari profil Nayura Arsineda'], [true, 'Respons siap ditampilkan']],
@@ -1365,7 +1393,6 @@
         };
       }
 
-      // Di luar cakupan pembuat & web ini -> sapa balik jika ada sapaan, lalu batasi dengan jelas
       return {
         cat: 'out_of_scope', label: 'Di Luar Cakupan Pengetahuan', conf: 0.35, pct: 35,
         fields: [],
@@ -1377,7 +1404,7 @@
         route: 'review',
         acts: ['Deteksi pertanyaan di luar pengetahuan sistem', 'Kirim jawaban pembatasan pengetahuan yang jelas'],
         reply: `${greet}${OUT_OF_SCOPE_REPLY}`,
-        sug: ['Apakah Nayura masih terbuka untuk perusahaan?', 'Siapa pembuat web ini?', 'Web ini dibangun pakai apa aja?'],
+        sug: ['Ceritakan tentang Nayura', 'Apakah Nayura masih terbuka untuk perusahaan?', 'Web ini dibangun pakai apa aja?'],
         len: text.length
       };
     }
@@ -1503,14 +1530,43 @@
   }
 
   /* ======================================================================
-     4. KONTAK
+     4. KONTAK & DIRECT GMAIL HANDLER (PC & MOBILE)
      ====================================================================== */
+  const EMAIL_ADDR = 'arsinedanayura@gmail.com';
+  const GMAIL_WEB_COMPOSE = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(EMAIL_ADDR)}`;
+
+  // Pastikan klik email selalu membuka Gmail (bukan Outlook / mail client bawaan OS)
+  $$('.js-gmail-link').forEach((link) => {
+    link.setAttribute('href', GMAIL_WEB_COMPOSE);
+    link.addEventListener('click', (e) => {
+      const ua = navigator.userAgent || '';
+      const isAndroid = /Android/i.test(ua);
+      const isIOS = /iPhone|iPad|iPod/i.test(ua);
+
+      if (isAndroid) {
+        e.preventDefault();
+        // Intent langsung ke aplikasi Gmail Android dengan fallback Gmail Web
+        window.location.href = `intent://compose?to=${EMAIL_ADDR}#Intent;scheme=mailto;package=com.google.android.gm;S.browser_fallback_url=${encodeURIComponent(GMAIL_WEB_COMPOSE)};end`;
+      } else if (isIOS) {
+        e.preventDefault();
+        const start = Date.now();
+        window.location.href = `googlegmail:///co?to=${EMAIL_ADDR}`;
+        setTimeout(() => {
+          if (Date.now() - start < 1500 && !document.hidden) {
+            window.open(GMAIL_WEB_COMPOSE, '_blank', 'noopener,noreferrer');
+          }
+        }, 700);
+      }
+      // Pada PC / Desktop, browser mengikuti href GMAIL_WEB_COMPOSE di tab baru
+    });
+  });
+
   const ctClock = $('#ctClock');
   if (ctClock) {
     const ctStatus = $('#ctStatus');
     const upd = () => {
       const h = wib().getUTCHours(); ctClock.textContent = wibHms().slice(0, 5) + ' WIB';
-      ctStatus.textContent = h >= 8 && h < 21 ? '' : '';
+      ctStatus.textContent = h >= 8 && h < 21 ? 'Tersedia untuk diskusi' : 'Online · Respons via Gmail';
     };
     upd(); setInterval(upd, 20000);
   }
@@ -1547,358 +1603,223 @@
         el.addEventListener('pointerenter', () => { el.classList.add('ready', 'tilting'); }, { passive: true });
         el.addEventListener('pointermove', (e) => {
           const r = el.getBoundingClientRect(), amp = r.width > 520 ? 2.0 : 4.5;
-          el.style.setProperty('--ry', (((e.clientX - r.left) / r.width - 0.5) * amp * 2).toFixed(2) + 'deg');
-          el.style.setProperty('--rx', ((0.5 - (e.clientY - r.top) / r.height) * amp * 2).toFixed(2) + 'deg');
+          const rx = ((e.clientY - r.top) / r.height - 0.5) * -amp;
+          const ry = ((e.clientX - r.left) / r.width - 0.5) * amp;
+          el.style.setProperty('--rx', rx.toFixed(2) + 'deg');
+          el.style.setProperty('--ry', ry.toFixed(2) + 'deg');
         }, { passive: true });
-        el.addEventListener('pointerleave', () => { el.classList.remove('tilting'); el.style.setProperty('--rx', '0deg'); el.style.setProperty('--ry', '0deg'); }, { passive: true });
+        el.addEventListener('pointerleave', () => {
+          el.classList.remove('tilting');
+          el.style.setProperty('--rx', '0deg');
+          el.style.setProperty('--ry', '0deg');
+        }, { passive: true });
       });
-
-      $$('.btn, .icon-btn').filter((el) => !el.closest('#navWrap')).forEach((el) => {
-        let cx = 0, cy = 0, tx = 0, ty = 0, on = false;
-        const loop = () => {
-          cx += (tx - cx) * 0.18; cy += (ty - cy) * 0.18; el.style.translate = `${cx.toFixed(2)}px ${cy.toFixed(2)}px`;
-          if (Math.abs(tx - cx) > 0.05 || Math.abs(ty - cy) > 0.05 || tx || ty) raf(loop); else { on = false; el.style.translate = ''; }
-        };
-        el.addEventListener('pointermove', (e) => { const r = el.getBoundingClientRect(); tx = (e.clientX - r.left - r.width / 2) * 0.2; ty = (e.clientY - r.top - r.height / 2) * 0.28; if (!on) { on = true; raf(loop); } }, { passive: true });
-        el.addEventListener('pointerleave', () => { tx = 0; ty = 0; }, { passive: true });
-      });
-    }
-
-    const counters = [];
-    $$('.metric-val').forEach((el) => { const t = el.textContent.trim(); if (/^\d{4}$/.test(t)) counters.push({ el, to: +t, from: +t - 9, dec: 0 }); });
-    $$('.gpa b').forEach((el) => { const t = el.textContent.trim(); if (/^\d[.,]\d+$/.test(t)) counters.push({ el, to: parseFloat(t.replace(',', '.')), from: 0, dec: t.split(/[.,]/)[1].length, sep: t.includes(',') ? ',' : '.' }); });
-    if (counters.length && 'IntersectionObserver' in window) {
-      const io = new IntersectionObserver((es) => es.forEach((en) => {
-        if (!en.isIntersecting) return; io.unobserve(en.target); const c = counters.find((x) => x.el === en.target), t0 = performance.now(), dur = 1300;
-        (function f(t) { const k = 1 - Math.pow(1 - clamp((t - t0) / dur, 0, 1), 4), v = c.from + (c.to - c.from) * k; c.el.textContent = c.dec ? v.toFixed(c.dec).replace('.', c.sep) : String(Math.round(v)); if (k < 1) raf(f); })(t0);
-      }), { threshold: 0.6 });
-      counters.forEach((c) => io.observe(c.el));
     }
   }
 
-/* ======================================================================
-     6. SERTIFIKASI (Carousel PDF.js + Lightbox)
+  /* ======================================================================
+     6. CAROUSEL SERTIFIKASI & LIGHTBOX + SALIN EMAIL
      ====================================================================== */
   const CERTS = [
-    { title: 'Dicoding Basic Website Programming', issuer: 'Dicoding · 2024', pdf: 'asset/sertifikat/11.pdf' },
-    { title: 'Basic JavaScript Programming', issuer: 'Dicoding · 2024', pdf: 'asset/sertifikat/12.pdf' },
-    { title: 'HTML & CSS — MSIB 7', issuer: 'SoftUni Indonesia · 2024', pdf: 'asset/sertifikat/1.pdf' },
-    { title: 'JS Front End — MSIB 7', issuer: 'SoftUni Indonesia · 2024', pdf: 'asset/sertifikat/2.pdf' },
-    { title: 'PostgreSQL — MSIB 7', issuer: 'SoftUni Indonesia · 2024', pdf: 'asset/sertifikat/3.pdf' },
-    { title: 'Programming Basics with Python — MSIB 7', issuer: 'SoftUni Indonesia · 2024', pdf: 'asset/sertifikat/4.pdf' },
-    { title: 'Programming Fundamentals with Python — MSIB 7', issuer: 'SoftUni Indonesia · 2024', pdf: 'asset/sertifikat/5.pdf' },
-    { title: 'Python Advanced — MSIB 7', issuer: 'SoftUni Indonesia · 2024', pdf: 'asset/sertifikat/6.pdf' },
-    { title: 'Python OOP — MSIB 7', issuer: 'SoftUni Indonesia · 2024', pdf: 'asset/sertifikat/7.pdf' },
-    { title: 'Python ORM — MSIB 7', issuer: 'SoftUni Indonesia · 2024', pdf: 'asset/sertifikat/8.pdf' },
-    { title: 'Sertifikat Kepesertaan Studi Independen MSIB 7', issuer: 'Kampus Merdeka · 2024', pdf: 'asset/sertifikat/9.pdf' },
-    { title: 'MSIB 7 — International Software Engineering Diploma (Python Web Developer)', issuer: 'SoftUni Indonesia / Kampus Merdeka · 2024', pdf: 'asset/sertifikat/10.pdf' }
+    { title: 'Sertifikat #11', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/11.pdf' },
+    { title: 'Sertifikat #12', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/12.pdf' },
+    { title: 'Sertifikat #01', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/1.pdf' },
+    { title: 'Sertifikat #02', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/2.pdf' },
+    { title: 'Sertifikat #03', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/3.pdf' },
+    { title: 'Sertifikat #04', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/4.pdf' },
+    { title: 'Sertifikat #05', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/5.pdf' },
+    { title: 'Sertifikat #06', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/6.pdf' },
+    { title: 'Sertifikat #07', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/7.pdf' },
+    { title: 'Sertifikat #08', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/8.pdf' },
+    { title: 'Sertifikat #09', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/9.pdf' },
+    { title: 'Sertifikat #10', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/10.pdf' }
   ];
 
-  const PDFJS_SOURCES = [
-    {
-      lib: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
-      worker: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
-    },
-    {
-      lib: 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js',
-      worker: 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js'
-    }
-  ];
+  const certTrack = $('#certTrack');
+  const certCount = $('#certCount');
+  const certIndex = $('#certIndex');
+  const certBar = $('#certBar');
+  const certPrev = $('#certPrev');
+  const certNext = $('#certNext');
 
-  const track = $('#certTrack');
-  if (track) {
-    const pad = (n) => String(n).padStart(2, '0');
-    const total = CERTS.length;
-    const prevBtn = $('#certPrev');
-    const nextBtn = $('#certNext');
-    const idxEl = $('#certIndex');
-    const countEl = $('#certCount');
-    const certBar = $('#certBar');
-    const barWrap = certBar.parentElement;
-    if (countEl) countEl.textContent = total + ' sertifikat';
+  if (certTrack) {
+    if (certCount) certCount.textContent = `(${CERTS.length})`;
+    certTrack.innerHTML = CERTS.map((c, i) => `
+      <button class="cert" type="button" data-cert="${i}" aria-label="Lihat ${c.title}">
+        <span class="cert-media">
+          <span class="cert-num">${p2(i + 1)}</span>
+          <span class="cert-ph"><span>${c.title}</span><small>Klik untuk pratinjau</small></span>
+          <canvas class="cert-canvas" data-pdf="${c.file}" aria-hidden="true"></canvas>
+          <img src="${c.file.replace(/\.pdf$/i, '.jpg')}" alt="${c.title}" loading="lazy" onload="this.closest('.cert').classList.add('has-img')" onerror="this.remove()" />
+          <span class="cert-zoom" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-3.5-3.5"/></svg>
+          </span>
+        </span>
+        <span class="cert-cap">
+          <span class="cert-title">${c.title}</span>
+          <span class="cert-sub">${c.sub}</span>
+        </span>
+      </button>
+    `).join('');
 
-    const SEAL = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="5.5"/><path d="m8.8 13.6-1.6 7 4.8-2.6 4.8 2.6-1.6-7"/></svg>';
-    const ZOOM = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
 
-    const renderedPdfs = new WeakSet();
-    let pdfjsLibPromise = null;
+    // Render pratinjau halaman pertama PDF ke canvas thumbnail
+        // Render pratinjau halaman pertama PDF ke canvas thumbnail (dengan fallback object/embed & IntersectionObserver)
+    (function renderPdfThumbnails() {
+      const canvases = $$('.cert-canvas', certTrack);
+      if (!canvases.length) return;
 
-    function loadScriptFromUrl(url) {
-      return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = url;
-        script.async = true;
-        script.onload = () => (window.pdfjsLib ? resolve(window.pdfjsLib) : reject(new Error('pdfjsLib missing')));
-        script.onerror = () => reject(new Error('script load failed: ' + url));
-        document.head.appendChild(script);
-      });
-    }
+      const renderCanvas = async (cv) => {
+        if (!cv || !cv.isConnected || cv.dataset.rendered === '1') return;
+        cv.dataset.rendered = '1';
+        const card = cv.closest('.cert');
+        const url = cv.dataset.pdf;
 
-    async function loadPdfJs() {
-      if (window.pdfjsLib) return window.pdfjsLib;
-      if (pdfjsLibPromise) return pdfjsLibPromise;
-      pdfjsLibPromise = (async () => {
-        for (const src of PDFJS_SOURCES) {
+        if (window.pdfjsLib) {
           try {
-            const lib = await loadScriptFromUrl(src.lib);
-            lib.GlobalWorkerOptions.workerSrc = src.worker;
-            return lib;
-          } catch (_) {}
+            const pdf = await window.pdfjsLib.getDocument(url).promise;
+            const page = await pdf.getPage(1);
+            const vp = page.getViewport({ scale: 1.1 });
+            cv.width = vp.width;
+            cv.height = vp.height;
+            await page.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
+            if (card) card.classList.add('has-img');
+            return;
+          } catch (err) {
+            // Fallback ke embed/iframe preview jika worker/CORS/fetch PDF.js gagal
+          }
         }
-        throw new Error('All PDF.js CDNs failed');
-      })();
-      return pdfjsLibPromise;
-    }
 
-    function applyEmbedFallback(card, item) {
-      const media = $('.cert-media', card);
-      if (!media || $('.cert-embed', media)) return;
-      const embed = document.createElement('embed');
-      embed.className = 'cert-embed';
-      embed.type = 'application/pdf';
-      embed.src = `${item.pdf}#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH`;
-      embed.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;pointer-events:none;';
-      const zoomEl = $('.cert-zoom', media);
-      media.insertBefore(embed, zoomEl);
-      card.classList.add('has-img');
-    }
-
-    async function renderPdfThumb(card, item) {
-      if (!item.pdf || renderedPdfs.has(card)) return;
-      renderedPdfs.add(card);
-      try {
-        const pdfjsLib = await loadPdfJs();
-        const loadingTask = pdfjsLib.getDocument({ url: item.pdf, verbosity: 0 });
-        const pdfDoc = await loadingTask.promise;
-        const page = await pdfDoc.getPage(1);
-
-        const baseViewport = page.getViewport({ scale: 1 });
-        const targetWidth = 560;
-        const scale = targetWidth / baseViewport.width;
-        const viewport = page.getViewport({ scale });
-
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.round(viewport.width);
-        canvas.height = Math.round(viewport.height);
-        canvas.setAttribute('aria-hidden', 'true');
-
-        const ctx = canvas.getContext('2d');
-        await page.render({ canvasContext: ctx, viewport }).promise;
-
-        const media = $('.cert-media', card);
-        const zoomEl = $('.cert-zoom', media);
-        media.insertBefore(canvas, zoomEl);
-        card.classList.add('has-img');
-      } catch (_) {
-        applyEmbedFallback(card, item);
-      }
-    }
-
-    const cards = CERTS.map((c, i) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'cert glass';
-      b.setAttribute('aria-label', `${c.title}, ${c.issuer} (PDF). Klik untuk melihat dokumen`);
-      b.innerHTML =
-        '<span class="cert-media">' +
-          `<span class="cert-num">${pad(i + 1)}</span>` +
-          `<span class="cert-ph">${SEAL}<span>Dokumen Sertifikat</span><small>${i + 1}.pdf</small></span>` +
-          '<img alt="" loading="lazy" decoding="async" />' +
-          `<span class="cert-zoom">${ZOOM}</span>` +
-        '</span>' +
-        '<span class="cert-cap"><span class="cert-title"></span><span class="cert-sub"></span></span>';
-      $('.cert-title', b).textContent = c.title;
-      $('.cert-sub', b).textContent = c.issuer;
-
-      const img = $('img', b);
-      if (c.img) {
-        img.alt = c.title;
-        img.addEventListener('load', () => b.classList.add('has-img'));
-        img.addEventListener('error', () => img.remove());
-        img.src = c.img;
-      } else {
-        img.remove();
-      }
-
-      b.addEventListener('click', () => openLb(i));
-      track.appendChild(b);
-      return { el: b, data: c };
-    });
-
-    function renderVisibleThumbs() {
-      const trackRect = track.getBoundingClientRect();
-      cards.forEach(({ el, data }) => {
-        if (!data.pdf || el.classList.contains('has-img')) return;
-        const r = el.getBoundingClientRect();
-        if (r.right >= trackRect.left - 320 && r.left <= trackRect.right + 320) {
-          renderPdfThumb(el, data);
+        if (card && !card.querySelector('.cert-pdf-frame')) {
+          const media = card.querySelector('.cert-media');
+          const frame = document.createElement('iframe');
+          frame.className = 'cert-pdf-frame';
+          frame.src = `${url}#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH`;
+          frame.setAttribute('loading', 'lazy');
+          frame.setAttribute('tabindex', '-1');
+          frame.setAttribute('aria-hidden', 'true');
+          frame.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;pointer-events:none;';
+          frame.addEventListener('load', () => card.classList.add('has-img'), { once: true });
+          if (media) media.appendChild(frame);
         }
-      });
-    }
+        cv.remove();
+      };
 
-    const gap = () => parseFloat(getComputedStyle(track).columnGap) || 14;
-    const step = () => cards[0].el.getBoundingClientRect().width + gap();
-    const visible = () => Math.max(1, Math.floor((track.clientWidth + gap()) / step() + 0.05));
-    const behavior = () => (reduceMotion ? 'auto' : 'smooth');
+      const triggerAll = () => {
+        if ('IntersectionObserver' in window) {
+          const io = new IntersectionObserver((entries, obs) => {
+            entries.forEach((en) => {
+              if (en.isIntersecting) {
+                renderCanvas(en.target);
+                obs.unobserve(en.target);
+              }
+            });
+          }, { root: certTrack, rootMargin: '200px', threshold: 0.01 });
+          canvases.forEach((cv) => io.observe(cv));
+        }
+        // Render item yang terlihat di awal langsung
+        canvases.slice(0, 4).forEach((cv) => renderCanvas(cv));
+      };
 
-    function updateCarousel() {
-      const max = track.scrollWidth - track.clientWidth;
-      const v = visible();
-      let first = Math.round(track.scrollLeft / step());
-      first = clamp(first, 0, Math.max(0, total - v));
-      const last = Math.min(first + v, total);
-      idxEl.textContent = v === 1 ? `${pad(first + 1)} / ${total}` : `${pad(first + 1)}–${pad(last)} / ${total}`;
-      prevBtn.disabled = track.scrollLeft <= 2;
-      nextBtn.disabled = track.scrollLeft >= max - 2;
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      s.onload = () => {
+        if (window.pdfjsLib) {
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+        triggerAll();
+      };
+      s.onerror = triggerAll;
+      document.head.appendChild(s);
+    })();
 
-      const ratio = clamp(track.clientWidth / track.scrollWidth, 0.1, 1);
-      certBar.style.width = (ratio * 100).toFixed(2) + '%';
-      const travel = barWrap.clientWidth * (1 - ratio);
-      certBar.style.transform = `translate3d(${(max > 0 ? (track.scrollLeft / max) * travel : 0).toFixed(1)}px,0,0)`;
+const updateCar = () => {
+      const max = Math.max(1, certTrack.scrollWidth - certTrack.clientWidth);
+      const ratio = clamp(certTrack.scrollLeft / max, 0, 1);
+      if (certBar) {
+        const w = Math.max(20, (certTrack.clientWidth / Math.max(1, certTrack.scrollWidth)) * 100);
+        certBar.style.width = w + '%';
+        certBar.style.transform = `translateX(${ratio * ((100 - w) / w) * 100}%)`;
+      }
+      const first = Math.min(CERTS.length, Math.round(ratio * (CERTS.length - 1)) + 1);
+      if (certIndex) certIndex.textContent = `${p2(first)} / ${p2(CERTS.length)}`;
+      if (certPrev) certPrev.disabled = certTrack.scrollLeft <= 4;
+      if (certNext) certNext.disabled = certTrack.scrollLeft >= max - 4;
+    };
 
-      renderVisibleThumbs();
-    }
+    certTrack.addEventListener('scroll', updateCar, { passive: true });
+    window.addEventListener('resize', updateCar);
+    updateCar();
 
-    renderVisibleThumbs();
+    const stepScroll = (dir) => {
+      const card = $('.cert', certTrack);
+      const w = card ? card.offsetWidth + 14 : 300;
+      certTrack.scrollBy({ left: dir * w, behavior: reduceMotion ? 'auto' : 'smooth' });
+    };
+    if (certPrev) certPrev.addEventListener('click', () => stepScroll(-1));
+    if (certNext) certNext.addEventListener('click', () => stepScroll(1));
 
-    if ('IntersectionObserver' in window) {
-      const certSectionObs = new IntersectionObserver((entries) => {
-        if (entries.some((en) => en.isIntersecting)) renderVisibleThumbs();
-      }, { rootMargin: '300px 0px' });
-      certSectionObs.observe(track);
-    }
-
-    let carTick = false;
-    track.addEventListener('scroll', () => {
-      if (!carTick) { carTick = true; requestAnimationFrame(() => { updateCarousel(); carTick = false; }); }
-    }, { passive: true });
-    window.addEventListener('resize', updateCarousel);
-
-    prevBtn.addEventListener('click', () => track.scrollBy({ left: -step() * visible(), behavior: behavior() }));
-    nextBtn.addEventListener('click', () => track.scrollBy({ left: step() * visible(), behavior: behavior() }));
-    track.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') { e.preventDefault(); track.scrollBy({ left: step(), behavior: behavior() }); }
-      if (e.key === 'ArrowLeft') { e.preventDefault(); track.scrollBy({ left: -step(), behavior: behavior() }); }
-    });
-
-    let down = false, moved = false, startX = 0, startScroll = 0;
-    track.addEventListener('pointerdown', (e) => {
-      if (e.pointerType !== 'mouse' || e.button !== 0) return;
-      down = true; moved = false; startX = e.clientX; startScroll = track.scrollLeft;
-    });
-    window.addEventListener('pointermove', (e) => {
-      if (!down) return;
-      const dx = e.clientX - startX;
-      if (!moved && Math.abs(dx) > 6) { moved = true; track.classList.add('dragging'); }
-      if (moved) track.scrollLeft = startScroll - dx;
-    });
-    window.addEventListener('pointerup', () => {
-      if (!down) return;
-      down = false;
-      if (!moved) return;
-      const target = clamp(Math.round(track.scrollLeft / step()), 0, total - 1) * step();
-      track.scrollTo({ left: target, behavior: behavior() });
-      setTimeout(() => { track.classList.remove('dragging'); moved = false; }, 450);
-    });
-    track.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
-
+    // Lightbox
     const lb = $('#lightbox');
     const lbImg = $('#lbImg');
     const lbPdf = $('#lbPdf');
     const lbTitle = $('#lbTitle');
     const lbSub = $('#lbSub');
     const lbOpen = $('#lbOpen');
-    const lbClose = $('.lb-close', lb);
-    const lbPrev = $('#lbPrev');
-    const lbNext = $('#lbNext');
-    let lbIndex = -1;
-    let lastFocus = null;
+    let lbIdx = 0;
 
-    function openLb(i) {
-      const item = CERTS[i];
-      if (!item || (!item.pdf && !item.img)) return;
-      if (lb.hidden) lastFocus = document.activeElement;
-      lbIndex = i;
-      lbTitle.textContent = item.title;
-      lbSub.textContent = `${pad(i + 1)} / ${total} · ${item.issuer}`;
-
-      if (item.pdf) {
-        lbImg.hidden = true;
-        lbImg.removeAttribute('src');
-        lbPdf.hidden = false;
-        lbPdf.src = item.pdf;
-        lbOpen.href = item.pdf;
-        lbOpen.hidden = false;
-      } else {
-        lbPdf.hidden = true;
-        lbPdf.removeAttribute('src');
-        lbImg.hidden = false;
-        lbImg.src = item.img;
-        lbImg.alt = item.title;
-        lbOpen.hidden = true;
-      }
-
+    const openLb = (i) => {
+      lbIdx = ((i % CERTS.length) + CERTS.length) % CERTS.length;
+      const c = CERTS[lbIdx];
+      lbTitle.textContent = c.title;
+      lbSub.textContent = c.sub;
+      lbOpen.href = c.file;
+      lbImg.hidden = true;
+      lbPdf.hidden = false;
+      lbPdf.src = c.file;
       lb.hidden = false;
       document.documentElement.classList.add('lb-open');
-      track.scrollTo({ left: clamp(i, 0, total - 1) * step(), behavior: 'auto' });
-      lbClose.focus();
-    }
-    function closeLb() {
-      if (lb.hidden) return;
+    };
+    const closeLb = () => {
       lb.hidden = true;
       lbPdf.src = '';
       document.documentElement.classList.remove('lb-open');
-      if (lastFocus && lastFocus.focus) lastFocus.focus();
-    }
-    function stepLb(dir) {
-      openLb((lbIndex + dir + total) % total);
-    }
-    lb.addEventListener('click', (e) => { if (e.target.closest('[data-close]')) closeLb(); });
-    lbPrev.addEventListener('click', () => stepLb(-1));
-    lbNext.addEventListener('click', () => stepLb(1));
+    };
+
+    certTrack.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-cert]');
+      if (btn) openLb(+btn.dataset.cert);
+    });
+    $$('[data-close]', lb).forEach((el) => el.addEventListener('click', closeLb));
+    $('#lbPrev').addEventListener('click', () => openLb(lbIdx - 1));
+    $('#lbNext').addEventListener('click', () => openLb(lbIdx + 1));
     document.addEventListener('keydown', (e) => {
       if (lb.hidden) return;
       if (e.key === 'Escape') closeLb();
-      else if (e.key === 'ArrowLeft') stepLb(-1);
-      else if (e.key === 'ArrowRight') stepLb(1);
-      else if (e.key === 'Tab') {
-        const f = [lbClose, lbPrev, lbNext, ...(lbOpen.hidden ? [] : [lbOpen])];
-        const i = f.indexOf(document.activeElement);
-        e.preventDefault();
-        f[(i + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus();
-      }
+      if (e.key === 'ArrowLeft') openLb(lbIdx - 1);
+      if (e.key === 'ArrowRight') openLb(lbIdx + 1);
     });
-
-    updateCarousel();
   }
 
-  /* ======================================================================
-     7. TOAST & SALIN EMAIL
-     ====================================================================== */
-  const toast = $('#toast');
-  let toastTimer;
+  // Toast & Salin Email
+  const toastEl = $('#toast');
+  let toastT = 0;
   const showToast = (msg) => {
-    if (!toast) return;
-    toast.textContent = msg;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastT);
+    toastT = setTimeout(() => toastEl.classList.remove('show'), 2600);
   };
+
   const copyBtn = $('#copyEmail');
   if (copyBtn) {
     copyBtn.addEventListener('click', async () => {
-      const email = 'arsinedanayura@gmail.com';
       try {
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(email);
-        } else {
-          const ta = document.createElement('textarea');
-          ta.value = email; ta.style.position = 'fixed'; ta.style.opacity = '0';
-          document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
-        }
-        showToast('Email berhasil disalin');
-      } catch (err) {
-        showToast(email);
+        await navigator.clipboard.writeText(EMAIL_ADDR);
+        showToast(`Email disalin: ${EMAIL_ADDR}`);
+      } catch {
+        showToast(EMAIL_ADDR);
       }
     });
   }
