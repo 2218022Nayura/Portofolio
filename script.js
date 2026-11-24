@@ -1157,6 +1157,182 @@
   }
 
   /* ======================================================================
+     2b. SPK DECISION TREE C4.5 — Data, Entropy & Gain, Pohon, Confusion Matrix
+     Angka utama dari skripsi: 71 data (50 training : 21 testing), 4 atribut,
+     root node Tingkat Implementasi (gain 0,927908), accuracy 90,48%,
+     macro precision 93,33%, macro recall 93,33%, macro F1 92,59%.
+     Sel matriks & cabang pohon = ilustrasi alur (ganti di SPK_DATA jika perlu).
+     ====================================================================== */
+  const spkBody = $('#spkBody');
+  if (spkBody) {
+    const SPK_DATA = {
+      total: 71, train: 50, test: 21,
+      attrs: ['Kelengkapan Dokumen', 'Tingkat Implementasi', 'Cakupan Aktivitas', 'Durasi Kerja Sama'],
+      gainRoot: '0,927908',
+      gainBars: [0.52, 1, 0.38, 0.27],
+      classes: ['Rendah', 'Sedang', 'Tinggi'],
+      cm: [[8, 2, 0], [0, 8, 0], [0, 0, 3]],
+      metrics: [['Accuracy', 90.48], ['Macro Precision', 93.33], ['Macro Recall', 93.33], ['Macro F1-score', 92.59]]
+    };
+    const tabs = $$('[data-spk]'), cap = $('#spkCap'), bar = $('#spkBar'), ttl = $('#spkTitle'), spkPause = $('#spkPause');
+    let key = 'data', rid = 0, vis = false, paused = reduceMotion, ended = false;
+    const say = (t, p) => { cap.textContent = t; bar.style.transform = `scaleX(${p})`; };
+    const pct = (v) => v.toFixed(2).replace('.', ',') + '%';
+    const typeTo = async (el, text, ok, sp, render) => {
+      let b = '';
+      for (const ch of text) { if (!ok()) break; b += ch; el.innerHTML = render(b) + '<i class="caret"></i>'; await sleep(sp + Math.random() * sp * 0.5); }
+      return b;
+    };
+    const svgNS = 'http://www.w3.org/2000/svg';
+
+    const SC = {
+      /* ---------- 1. Data & hold-out ---------- */
+      data: {
+        title: 'holdout_split.py · Python 3',
+        mount(b) {
+          b.innerHTML = `<div class="fx-2"><pre class="fx-code"><code id="spC"></code></pre><div class="spk-vis">
+            <div class="spk-stats"><div class="mini"><small>Data historis</small><b id="spD1">0</b></div><div class="mini"><small>Training</small><b id="spD2">0</b></div><div class="mini"><small>Testing</small><b id="spD3">0</b></div></div>
+            <div class="spk-dots" id="spDots">${Array.from({ length: SPK_DATA.total }, () => '<i></i>').join('')}</div>
+            <div class="spk-legend"><span><b></b>Training (${SPK_DATA.train})</span><span><b class="te"></b>Testing (${SPK_DATA.test})</span></div>
+            <div class="spk-attrs" id="spA">${SPK_DATA.attrs.map((a) => `<span>${a}</span>`).join('')}</div></div></div>`;
+          const code = '# 1. muat data historis kerja sama LPKU\ndata = load_partnerships()   # 71 baris\n# 2. skema hold-out\ntrain, test = holdout(data, 50, 21)\n# 3. empat atribut klasifikasi\nX = ["dokumen", "implementasi",\n     "cakupan", "durasi"]\ny = "tingkat_risiko"';
+          return async (ok) => {
+            const dots = $$('#spDots i', b), attrs = $$('#spA span', b), c = $('#spC', b);
+            say('Memuat 71 data historis kemitraan…', 0.05);
+            const typing = typeTo(c, code, ok, 10, (s) => hl(s));
+            for (let i = 0; i < dots.length; i++) { if (!ok()) return; dots[i].classList.add('in'); if (i % 4 === 0) await sleep(34); }
+            countTo($('#spD1', b), SPK_DATA.total, 800);
+            await typing; if (!ok()) return; c.innerHTML = hl(code);
+            say('Hold-out: membagi data menjadi 50 training & 21 testing', 0.45); await sleep(500);
+            dots.forEach((d, i) => { d.classList.add(((i * 13) % 71) < SPK_DATA.test ? 'te' : 'tr'); });
+            countTo($('#spD2', b), SPK_DATA.train, 800); countTo($('#spD3', b), SPK_DATA.test, 800); await sleep(1200);
+            say('Empat atribut klasifikasi disiapkan', 0.75);
+            for (const a of attrs) { if (!ok()) return; a.classList.add('on'); await sleep(380); }
+            say('Dataset siap dilatih dengan C4.5 ✓', 1); await sleep(1700);
+          };
+        }
+      },
+
+      /* ---------- 2. Entropy & information gain ---------- */
+      gain: {
+        title: 'information_gain.py · Entropy C4.5',
+        mount(b) {
+          b.innerHTML = `<div class="fx-2"><pre class="fx-code"><code id="spC"></code></pre><div class="spk-vis">
+            <div class="xr-h">Information Gain per atribut (data training)</div>
+            <div class="spk-gain" id="spG">${SPK_DATA.attrs.map((a, i) => `<div class="spk-g ${i === 1 ? 'root' : ''}"><span>${a}</span><b>—</b><div class="bar"><i></i></div></div>`).join('')}</div>
+            <span class="spk-root-tag" id="spR">ROOT NODE · Tingkat Implementasi</span></div></div>`;
+          const code = 'def entropy(S):\n    return -sum(p * log2(p) for p in rasio_kelas(S))\n\ndef gain(S, A):\n    sisa = sum(w(v) * entropy(S[A == v])\n               for v in nilai(A))\n    return entropy(S) - sisa\n\nroot = argmax(gain(train, A) for A in X)';
+          return async (ok) => {
+            const rows = $$('.spk-g', b), c = $('#spC', b);
+            say('Menghitung entropy kelas risiko', 0.1);
+            await typeTo(c, code, ok, 10, (s) => hl(s)); if (!ok()) return; c.innerHTML = hl(code);
+            say('Menghitung information gain setiap atribut', 0.45);
+            for (let i = 0; i < rows.length; i++) {
+              if (!ok()) return; const r = rows[i];
+              r.classList.add('in'); $('b', r).textContent = i === 1 ? SPK_DATA.gainRoot : '< ' + SPK_DATA.gainRoot;
+              $('.bar i', r).style.transform = `scaleX(${SPK_DATA.gainBars[i]})`; await sleep(650);
+            }
+            say('Gain tertinggi → Tingkat Implementasi menjadi root node', 0.85); await sleep(500);
+            $('#spR', b).classList.add('in'); await sleep(1700);
+            say('Root node terpilih: Tingkat Implementasi (gain 0,927908) ✓', 1); await sleep(900);
+          };
+        }
+      },
+
+      /* ---------- 3. Pohon keputusan ---------- */
+      tree: {
+        title: 'build_tree.py · Decision Tree C4.5',
+        mount(b) {
+          b.innerHTML = '<div class="fx-2"><div class="term2" id="spT"></div><div class="erd spk-tree" id="spE"><svg viewBox="0 0 100 100" preserveAspectRatio="none"></svg></div></div>';
+          const H = 10;
+          const N = [
+            { id: 'r', x: 50, y: 5, t: 'Tingkat Implementasi', s: 'root · gain 0,927908', cls: 'root' },
+            { id: 'a', x: 17, y: 40, t: 'RISIKO RENDAH', cls: 'leaf', p: 'r', e: 'Tinggi' },
+            { id: 'b', x: 50, y: 40, t: 'Kelengkapan Dokumen', p: 'r', e: 'Sedang' },
+            { id: 'c', x: 83, y: 40, t: 'Cakupan Aktivitas', p: 'r', e: 'Rendah' },
+            { id: 'd', x: 36, y: 76, t: 'RISIKO SEDANG', cls: 'leaf', p: 'b', e: 'Lengkap' },
+            { id: 'e', x: 64, y: 76, t: 'RISIKO TINGGI', cls: 'leaf', p: 'b', e: 'Tidak' },
+            { id: 'f', x: 83, y: 76, t: 'RISIKO TINGGI', cls: 'leaf', p: 'c', e: 'Terbatas' }
+          ];
+          return async (ok) => {
+            const T = $('#spT', b), E_ = $('#spE', b), svg = $('svg', E_), els = {}, lines = {}, byId = Object.fromEntries(N.map((n) => [n.id, n]));
+            const line = async (txt, cls = 'd') => { T.appendChild(E(`<div class="${cls}">${esc(txt)}</div>`)); while (T.children.length > 11) T.firstChild.remove(); };
+            const cmd = async (txt) => { const row = E('<div></div>'); T.appendChild(row); await typeTo(row, txt, ok, 18, (s) => `<span class="p">$</span> ${esc(s)}`); row.innerHTML = `<span class="p">$</span> ${esc(txt)}`; await sleep(260); };
+            await cmd('c45 --build --train 50'); if (!ok()) return;
+            for (let i = 0; i < N.length; i++) {
+              if (!ok()) return; const n = N[i]; say(i === 0 ? 'Root node dari gain tertinggi' : `Membangun cabang: ${byId[n.p].t} → ${n.e}`, 0.1 + (i / N.length) * 0.6);
+              const el = E(`<div class="spk-n ${n.cls || ''}" style="--x:${n.x};--y:${n.y}">${n.t}${n.s ? `<small>${n.s}</small>` : ''}</div>`);
+              E_.appendChild(el); els[n.id] = el;
+              if (n.p) {
+                const pn = byId[n.p], ln = document.createElementNS(svgNS, 'line');
+                [['x1', pn.x], ['y1', pn.y + H], ['x2', n.x], ['y2', n.y]].forEach(([k, v]) => ln.setAttribute(k, v)); svg.appendChild(ln); lines[n.id] = ln;
+                const lb = E(`<span class="spk-e" style="left:${(pn.x + n.x) / 2}%;top:${(pn.y + H + n.y) / 2}%">${n.e}</span>`); E_.appendChild(lb);
+                await sleep(40); ln.classList.add('on'); lb.classList.add('in'); await line(`split ${pn.t} = ${n.e}`);
+              } else await line('root = Tingkat Implementasi');
+              await sleep(40); el.classList.add('in'); await sleep(560);
+            }
+            say('Pohon keputusan terbentuk · menguji klasifikasi satu mitra', 0.8); await sleep(500);
+            await cmd('predict --mitra "Mitra Contoh"'); if (!ok()) return;
+            await line('implementasi = Sedang · dokumen = Lengkap');
+            E_.classList.add('walk');
+            for (const id of ['r', 'b', 'd']) { if (!ok()) return; els[id].classList.add('hit'); if (lines[id]) lines[id].classList.add('hit'); await sleep(650); }
+            await line('→ Tingkat Risiko: SEDANG', 'p');
+            say('Mitra terklasifikasi: Risiko Sedang → prioritas monitoring ✓', 1); await sleep(2000);
+          };
+        }
+      },
+
+      /* ---------- 4. Confusion matrix ---------- */
+      eval: {
+        title: 'evaluate_model.py · Confusion Matrix 3×3',
+        mount(b) {
+          const C = SPK_DATA.classes;
+          b.innerHTML = `<div class="fx-2"><div class="spk-cm-wrap"><div class="xr-h">Confusion Matrix · ${SPK_DATA.test} data testing</div>
+            <div class="spk-cm"><span class="h"></span>${C.map((c) => `<span class="h">Prediksi ${c}</span>`).join('')}
+            ${SPK_DATA.cm.map((row, i) => `<span class="h rh">Aktual ${C[i]}</span>${row.map((v, j) => `<span class="c ${i === j ? 'ok' : v ? 'bad' : ''}">${v}</span>`).join('')}`).join('')}</div>
+            <p class="spk-cm-cap">Diagonal gelap = prediksi benar · baris = kelas aktual · kolom = prediksi</p></div>
+            <div class="spk-met"><div class="qa-sum">${SPK_DATA.metrics.map(([n], i) => `<div class="mini"><small>${n}</small><b id="spM${i}">0,00%</b></div>`).join('')}</div>
+            <div class="spk-metbar">${SPK_DATA.metrics.map(([n]) => `<div><span>${n.replace('Macro ', '')}</span><div class="bar"><i></i></div></div>`).join('')}</div></div></div>`;
+          return async (ok) => {
+            const cells = $$('.spk-cm .c', b), fill = $$('.spk-metbar .bar i', b);
+            say('Menyusun confusion matrix dari 21 data testing', 0.1);
+            for (const c of cells) { if (!ok()) return; c.classList.add('in'); await sleep(170); }
+            await sleep(600); say('Menghitung accuracy, precision, recall & F1-score', 0.55);
+            for (let i = 0; i < SPK_DATA.metrics.length; i++) {
+              if (!ok()) return; const v = SPK_DATA.metrics[i][1];
+              countTo($('#spM' + i, b), v, 1000, pct); fill[i].style.transform = `scaleX(${v / 100})`; await sleep(600);
+            }
+            say('Accuracy 90,48% · F1-score 92,59% · risiko mitra terklasifikasi konsisten ✓', 1); await sleep(2000);
+          };
+        }
+      }
+    };
+
+    const NEXT = { data: 'gain', gain: 'tree', tree: 'eval', eval: 'data' };
+    async function start(k) {
+      key = k; ended = false; const id = ++rid;
+      tabs.forEach((t) => { const on = t.dataset.spk === k; t.classList.toggle('is-active', on); t.setAttribute('aria-selected', on); });
+      ttl.textContent = SC[k].title; say('Menyiapkan…', 0);
+      spkBody.innerHTML = ''; spkBody.style.animation = 'none'; void spkBody.offsetWidth; spkBody.style.animation = '';
+      const play = SC[k].mount(spkBody), ok = () => id === rid && vis && !document.hidden;
+      await sleep(450); if (!ok()) return;
+      try { await play(ok); } catch (e) {}
+      if (!ok()) return; await sleep(1400); if (!ok()) return; if (paused) { ended = true; return; } start(NEXT[k]);
+    }
+    tabs.forEach((t) => t.addEventListener('click', () => start(t.dataset.spk)));
+    if ('IntersectionObserver' in window) new IntersectionObserver(([en]) => {
+      vis = en.isIntersecting;
+      if (vis) { if (reduceMotion) { if (!spkBody.firstChild) spkBody.innerHTML = '<p class="fx-idle">Animasi otomatis dimatikan. Pilih tab untuk memutarnya.</p>'; } else start(key); } else rid++;
+    }, { threshold: 0.25 }).observe($('#spkSim'));
+    spkPause.addEventListener('click', () => {
+      paused = !paused; spkPause.textContent = paused ? 'Putar' : 'Jeda'; spkPause.setAttribute('aria-pressed', paused);
+      if (!paused && ended && vis) start(NEXT[key]);
+    });
+    if (paused) { spkPause.textContent = 'Putar'; spkPause.setAttribute('aria-pressed', 'true'); }
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && vis && !reduceMotion) start(key); });
+  }
+
+  /* ======================================================================
      3. AI AUTOMATION LITE — Tidak jalan otomatis (Manual Trigger oleh User)
      Normalisasi slang/typo, pemahaman luas tentang Nayura & si pembuat,
      kontak hanya lewat Gmail (tanpa WA), dan guard batasan pengetahuan.
@@ -1296,7 +1472,7 @@
         sug: ['Ceritakan proyek yang pernah dikerjakan', 'Apakah Nayura masih terbuka untuk perusahaan?', 'Web ini dibangun pakai apa aja?'] },
       { id: 'tanya_proyek', label: 'Proyek & Pengalaman',
         kw: ['pengalaman', 'proyek', 'project', 'portofolio', 'portfolio', 'pernah kerja', 'kerja dimana', 'karya', 'asahi', 'lpku', 'mou', 'pks', 'forecast', 'company profile', 'magang', 'skripsi', 'decision tree', 'tugas akhir', 'analisis risiko', 'spk', 'riwayat kerja'],
-        reply: (_co, _low, greet) => `${greet}Proyek & pengalaman utama Nayura meliputi: (1) Skripsi SPK analisis risiko kerja sama & kemitraan perguruan tinggi berbasis Decision Tree di LPKU ITN Malang, (2) Sistem Manajemen Kerja Sama MoU/PKS (portal, dashboard, notifikasi masa berlaku, repositori, UAT & deployment), (3) Website Company Profile LPKU ITN Malang, (4) Aplikasi Desktop Monitoring Forecast Barang di PT. Asahi Best Base Indonesia (login Operator/Leader, CRUD IN/OUT, validasi, tanda tangan & cetak PDF), dan (5) Optimasi frontend company profile.`,
+        reply: (_co, _low, greet) => `${greet}Proyek & pengalaman utama Nayura meliputi: (1) Full-stack web LPKU ITN Malang: Sistem Manajemen Kerja Sama MoU/PKS (portal, dashboard, notifikasi masa berlaku, repositori, UAT & deployment), (2) Tugas akhir S1: SPK analisis risiko kerja sama & kemitraan perguruan tinggi dengan Decision Tree C4.5 (71 data, accuracy 90,48%), (3) Magang di PT. Asahi Best Base Indonesia: aplikasi desktop monitoring forecast barang (login Operator/Leader, CRUD IN/OUT, validasi, tanda tangan & cetak PDF), serta (4) proyek lainnya: website company profile LPKU dan optimasi frontend company profile.`,
         sug: ['Apa saja keahlian Nayura?', 'Apakah Nayura masih terbuka untuk perusahaan?', 'Web ini dibangun pakai apa aja?'] },
       { id: 'tanya_pendidikan', label: 'Pendidikan & Sertifikasi',
         kw: ['kuliah', 'kampus', 'ipk', 'lulusan', 'pendidikan', 'universitas', 'itn', 'malang', 'msib', 'dicoding', 'sertifikat', 'sertifikasi', 'sma ', 'pelatihan', 'sekolah', 'wisuda', 'gelar'],
@@ -1621,18 +1797,18 @@
      6. CAROUSEL SERTIFIKASI & LIGHTBOX + SALIN EMAIL
      ====================================================================== */
   const CERTS = [
-    { title: 'Sertifikat #11', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/11.pdf' },
-    { title: 'Sertifikat #12', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/12.pdf' },
-    { title: 'Sertifikat #01', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/1.pdf' },
-    { title: 'Sertifikat #02', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/2.pdf' },
-    { title: 'Sertifikat #03', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/3.pdf' },
-    { title: 'Sertifikat #04', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/4.pdf' },
-    { title: 'Sertifikat #05', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/5.pdf' },
-    { title: 'Sertifikat #06', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/6.pdf' },
-    { title: 'Sertifikat #07', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/7.pdf' },
-    { title: 'Sertifikat #08', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/8.pdf' },
-    { title: 'Sertifikat #09', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/9.pdf' },
-    { title: 'Sertifikat #10', sub: 'Sertifikasi & Pelatihan', file: 'asset/sertifikat/10.pdf' }
+    { title: 'Belajar Dasar Pemrograman Web', sub: 'Dicoding Indonesia · Mei 2024', file: 'asset/sertifikat/11.pdf' },
+    { title: 'Belajar Dasar Pemrograman JavaScript', sub: 'Dicoding Indonesia · Juni 2024', file: 'asset/sertifikat/12.pdf' },
+    { title: 'HTML & CSS - MSIB 7 - 2024', sub: 'SoftUni Indonesia · Nilai 90,66', file: 'asset/sertifikat/1.pdf' },
+    { title: 'JS Front End - MSIB 7 - 2024', sub: 'SoftUni Indonesia · Nilai 100', file: 'asset/sertifikat/2.pdf' },
+    { title: 'PostgreSQL - MSIB 7 - 2024', sub: 'SoftUni Indonesia · Nilai 100', file: 'asset/sertifikat/3.pdf' },
+    { title: 'Honorable Mention: Programming Basics with Python - MSIB 7 - 2024', sub: 'SoftUni Indonesia · Nilai 100', file: 'asset/sertifikat/4.pdf' },
+    { title: 'Programming Fundamentals with Python - MSIB 7 - 2024', sub: 'SoftUni Indonesia · Nilai 100', file: 'asset/sertifikat/5.pdf' },
+    { title: 'Python Advanced - MSIB 7 - 2024', sub: 'SoftUni Indonesia · Nilai 100', file: 'asset/sertifikat/6.pdf' },
+    { title: 'Python OOP - MSIB 7 - 2024', sub: 'SoftUni Indonesia · Nilai 100', file: 'asset/sertifikat/7.pdf' },
+    { title: 'Python ORM - MSIB 7 - 2024', sub: 'SoftUni Indonesia · Nilai 100', file: 'asset/sertifikat/8.pdf' },
+    { title: 'Sertifikat Kepesertaan Studi Independen Bersertifikat Angkatan 7', sub: 'Kampus Merdeka · MSIB Batch 7', file: 'asset/sertifikat/9.pdf' },
+    { title: 'Sertifikat Magang & Studi Independen: International Software Engineering Diploma – Python Web Developer', sub: 'SoftUni Indonesia · MSIB Batch 7', file: 'asset/sertifikat/10.pdf' }
   ];
 
   const certTrack = $('#certTrack');
